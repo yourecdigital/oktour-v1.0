@@ -1,7 +1,42 @@
 {
-  "title": "Sochi Travel"
+  "hero": {
+    "title": "Discover Amazing Tours",
+    "subtitle": "Explore the world with our carefully curated travel experiences",
+    "cta": "Start Your Journey"
+  },
+  "features": {
+    "global": {
+      "title": "Global Destinations",
+      "description": "Explore destinations around the world with our comprehensive tour packages"
+    },
+    "accommodation": {
+      "title": "Premium Accommodation",
+      "description": "Stay in the finest hotels and resorts during your travels"
+    },
+    "travel": {
+      "title": "Seamless Travel",
+      "description": "Enjoy hassle-free travel with our all-inclusive packages"
+    }
+  },
+  "tours": {
+    "title": "Our Tours",
+    "description": "Discover our amazing collection of tours and travel experiences"
+  },
+  "tourDetail": {
+    "title": "Tour Details",
+    "description": "Learn more about this amazing tour experience"
+  },
+  "contact": {
+    "title": "Contact Us",
+    "description": "Get in touch with our travel experts"
+  },
+  "about": {
+    "title": "About Us",
+    "description": "Learn more about our travel company and mission"
+  },
+  "notFound": {
+    "title": "Page Not Found",
+    "message": "Sorry, the page you are looking for does not exist.",
+    "goHome": "Go Home"
+  }
 }
-
-
-
-
