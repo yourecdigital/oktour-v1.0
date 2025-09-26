@@ -19,7 +19,13 @@
     "docker:down": "docker-compose -f docker-compose.dev.yml down",
     "docker:logs": "docker-compose -f docker-compose.dev.yml logs -f",
     "docker:build": "docker-compose -f docker-compose.dev.yml build",
-    "setup:dev": "node scripts/generate-env.js && chmod +x scripts/dev-setup.sh && ./scripts/dev-setup.sh"
+    "setup:dev": "node scripts/generate-env.js && chmod +x scripts/dev-setup.sh && ./scripts/dev-setup.sh",
+    "admin:dev": "cd apps/admin && pnpm dev",
+    "admin:build": "cd apps/admin && pnpm build",
+    "web:dev": "cd apps/web && pnpm dev",
+    "web:build": "cd apps/web && pnpm build",
+    "api:dev": "cd apps/api && pnpm dev",
+    "api:build": "cd apps/api && pnpm build"
   },
   "devDependencies": {
     "turbo": "^1.13.0",

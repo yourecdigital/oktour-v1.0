@@ -1,38 +1,30 @@
-# Multi-stage build for Admin Dashboard
-FROM node:18-alpine AS base
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
+# Stage 1: Build the Admin application
+FROM node:22-alpine AS builder
 
-FROM node:18-alpine AS deps
-WORKDIR /app
-COPY package*.json pnpm-lock.yaml ./
-RUN npm install -g pnpm@8.15.0
+WORKDIR /app/apps/admin
+
+COPY package.json pnpm-lock.yaml ./
+COPY turbo.json ./
+COPY packages /app/packages
+COPY apps/admin/package.json ./
+COPY apps/admin/tsconfig.json ./
+COPY apps/admin/src /app/apps/admin/src
+COPY apps/admin/public /app/apps/admin/public
+COPY apps/admin/index.html /app/apps/admin/
+
+RUN corepack enable
 RUN pnpm install --frozen-lockfile
 
-FROM node:18-alpine AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
-RUN npm install -g pnpm@8.15.0
-RUN pnpm build
+RUN pnpm --filter admin build
 
-FROM nginx:alpine AS production
-COPY --from=builder /app/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-EXPOSE 80
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:80/health || exit 1
-CMD ["nginx", "-g", "daemon off;"]
+# Stage 2: Serve the Admin application
+FROM nginx:alpine AS runner
 
-# Development stage
-FROM node:18-alpine AS development
-WORKDIR /app
-COPY package*.json pnpm-lock.yaml ./
-RUN npm install -g pnpm@8.15.0
-RUN pnpm install
-COPY . .
+COPY --from=builder /app/apps/admin/dist /usr/share/nginx/html
+
+# Copy custom nginx config for admin
+COPY apps/admin/nginx.conf /etc/nginx/conf.d/default.conf
+
 EXPOSE 3001
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:3001/health || exit 1
-CMD ["pnpm", "dev"]
+
+CMD ["nginx", "-g", "daemon off;"]
