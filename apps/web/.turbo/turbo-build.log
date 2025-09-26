@@ -1,0 +1,20 @@
+
+> web@0.0.0 build D:\oktour-v1.0\apps\web
+> vite build && vite build --ssr src/entry.server.tsx
+
+[31mfailed to load config from D:\oktour-v1.0\apps\web\vite.config.ts[39m
+[31merror during build:
+Error: Cannot find module '@swc/plugin-styled-components'
+Require stack:
+- D:\oktour-v1.0\node_modules\.pnpm\@vitejs+plugin-react-swc@3.11.0_vite@6.3.6\node_modules\@vitejs\plugin-react-swc\index.js
+    at Function._resolveFilename (node:internal/modules/cjs/loader:1401:15)
+    at resolve (node:internal/modules/helpers:145:19)
+    at file:///D:/oktour-v1.0/node_modules/.pnpm/@vitejs+plugin-react-swc@3.11.0_vite@6.3.6/node_modules/@vitejs/plugin-react-swc/index.js:102:63
+    at Array.map (<anonymous>)
+    at react (file:///D:/oktour-v1.0/node_modules/.pnpm/@vitejs+plugin-react-swc@3.11.0_vite@6.3.6/node_modules/@vitejs/plugin-react-swc/index.js:102:50)
+    at file:///D:/oktour-v1.0/apps/web/node_modules/.vite-temp/vite.config.ts.timestamp-1758910545810-6ac9e9583cad3.mjs:7:5
+    at ModuleJob.run (node:internal/modules/esm/module_job:274:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:644:26)
+    at async loadConfigFromBundledFile (file:///D:/oktour-v1.0/node_modules/.pnpm/vite@6.3.6_@types+node@20.19.17/node_modules/vite/dist/node/chunks/dep-Bu492Fnd.js:49435:15)
+    at async bundleAndLoadConfigFile (file:///D:/oktour-v1.0/node_modules/.pnpm/vite@6.3.6_@types+node@20.19.17/node_modules/vite/dist/node/chunks/dep-Bu492Fnd.js:49278:22)[39m
+ ELIFECYCLE  Command failed with exit code 1.

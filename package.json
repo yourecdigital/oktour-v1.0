@@ -19,7 +19,8 @@
   "devDependencies": {
     "turbo": "^1.13.0",
     "@types/node": "^20.10.0",
-    "typescript": "^5.3.0"
+    "typescript": "^5.3.0",
+    "@tour/config": "workspace:*"
   },
   "engines": {
     "node": ">=18.17.0",

@@ -1,13 +1,11 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
-import { VitePWA } from '@vite-pwa/vite-plugin';
+import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
   plugins: [
     react({
       jsxImportSource: 'react',
-      plugins: [['@swc/plugin-styled-components', { displayName: true, ssr: true }]],
-      styledComponents: true,
     }),
     VitePWA({
       strategies: 'injectManifest',

@@ -1,0 +1,5 @@
+
+> @tour/ui@1.0.0 build D:\oktour-v1.0\packages\ui
+> vite build
+
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
