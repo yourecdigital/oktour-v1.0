@@ -1,0 +1,578 @@
+.universal-hero-section {
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  overflow: hidden;
+  cursor: default;
+  padding-top: calc(var(--hero-safe-area, 280px) + var(--hero-viewport-offset, 15vh));
+  scroll-margin-top: var(--header-height, 110px);
+  /* Современные CSS методы для надежного позиционирования */
+  margin-top: 0;
+  box-sizing: border-box;
+  /* Дополнительная защита от перекрытия */
+  isolation: isolate;
+  contain: layout style paint;
+}
+
+/* Специальные стили для главной страницы */
+.homepage .universal-hero-section {
+  min-height: 100vh !important;
+  padding-top: calc(var(--hero-safe-area, 280px) + var(--hero-viewport-offset, 15vh)) !important;
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  scroll-margin-top: var(--header-height, 110px) !important;
+  /* Дополнительная защита от перекрытия */
+  margin-top: 0 !important;
+  box-sizing: border-box !important;
+  position: relative !important;
+  z-index: 1 !important;
+  /* Современные CSS методы для изоляции */
+  isolation: isolate !important;
+  contain: layout style paint !important;
+}
+
+/* Стили для всех остальных страниц (contact, promotions, services, cruises, foreign, hotels, tours) */
+.contact-page .universal-hero-section,
+.promotions-page .universal-hero-section,
+.services-page .universal-hero-section,
+.cruises-page .universal-hero-section,
+.foreign-page .universal-hero-section,
+.hotels-page .universal-hero-section,
+.tours-page .universal-hero-section {
+  min-height: 500px !important; /* Устанавливаем высоту 500px для ПК */
+  padding-top: 20px !important; /* Уменьшаем padding-top */
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  scroll-margin-top: var(--header-height, 110px) !important;
+  margin-top: 0 !important;
+  box-sizing: border-box !important;
+  position: relative !important;
+  z-index: 1 !important;
+  isolation: isolate !important;
+  contain: layout style paint !important;
+}
+
+.homepage .universal-hero-section .hero-content {
+  max-width: 1600px !important;
+  margin: 0 auto !important;
+  padding: 80px 40px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  position: relative !important;
+  z-index: 10 !important;
+  min-height: calc(100vh - var(--hero-safe-area, 280px) - var(--hero-viewport-offset, 15vh)) !important;
+  width: 100% !important;
+  gap: 40px !important;
+  /* Современные CSS методы для надежного отображения */
+  box-sizing: border-box !important;
+  isolation: isolate !important;
+  contain: layout style paint !important;
+  /* Дополнительная защита от перекрытия */
+  margin-top: 20px !important;
+}
+
+/* Контейнер для title и description на одном уровне */
+.homepage .universal-hero-section .hero-text-container {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 60px !important;
+  width: 100% !important;
+  max-width: 1400px !important; /* Увеличили с 1200px до 1400px */
+  margin: 25px auto 0 auto !important;
+}
+
+/* Стили для контейнера кнопок и карточки */
+.homepage .universal-hero-section .hero-actions-container {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: flex-start !important;
+  gap: 80px !important;
+  width: 100% !important;
+  max-width: 1400px !important;
+  margin: 0 auto !important;
+}
+
+/* Стили для левой и правой частей */
+.homepage .universal-hero-section .hero-left {
+  flex: 1;
+  max-width: 600px;
+}
+
+.homepage .universal-hero-section .hero-right {
+  flex: 1;
+  max-width: 400px;
+}
+
+/* Стили для заголовков UniversalHeroSection на главной странице */
+.homepage .universal-hero-section .hero-title {
+  font-size: 4rem !important;
+  font-weight: 800 !important;
+  margin: 0 !important;
+  line-height: 1.1 !important;
+  color: white !important;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
+  text-align: left !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative !important;
+  z-index: 25 !important;
+  isolation: isolate !important;
+  contain: layout style !important;
+  flex: 1 !important;
+  max-width: 800px !important; /* Увеличили с 600px до 800px */
+  min-height: 120px !important;
+}
+
+.homepage .universal-hero-section .hero-description {
+  font-size: 1.3rem !important;
+  margin: 0 !important;
+  opacity: 0.95 !important;
+  line-height: 1.6 !important;
+  color: rgba(255, 255, 255, 0.95) !important;
+  font-weight: 400 !important;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3) !important;
+  text-align: left !important;
+  display: flex !important;
+  align-items: center !important;
+  visibility: visible !important;
+  position: relative !important;
+  z-index: 25 !important;
+  isolation: isolate !important;
+  contain: layout style !important;
+  flex: 1 !important;
+  max-width: 500px !important;
+  min-height: 120px !important;
+}
+
+/* Стили для highlight в заголовке */
+.homepage .universal-hero-section .hero-title .highlight {
+  color: #ffd700 !important;
+  font-weight: 900 !important;
+}
+
+/* Адаптивность для главной страницы */
+@media (max-width: 1024px) {
+  .homepage .universal-hero-section {
+    padding-top: calc(var(--hero-safe-area, 250px) + var(--hero-viewport-offset, 12vh)) !important;
+  }
+  
+  /* Адаптивность для остальных страниц */
+  .contact-page .universal-hero-section,
+  .promotions-page .universal-hero-section,
+  .services-page .universal-hero-section,
+  .cruises-page .universal-hero-section,
+  .foreign-page .universal-hero-section,
+  .hotels-page .universal-hero-section,
+  .tours-page .universal-hero-section {
+    min-height: 150px !important; /* Уменьшаем высоту на планшетах */
+    padding-top: 15px !important;
+  }
+  
+  .homepage .universal-hero-section .hero-content {
+    flex-direction: column !important;
+    gap: 40px !important;
+    padding: 70px 20px !important;
+    text-align: center;
+    align-items: center !important;
+    min-height: calc(100vh - var(--hero-safe-area, 250px) - var(--hero-viewport-offset, 12vh)) !important;
+  }
+  
+  .homepage .universal-hero-section .hero-text-container {
+    flex-direction: column !important;
+    gap: 20px !important;
+    align-items: center !important;
+    margin: 20px auto 0 auto !important;
+  }
+  
+  .homepage .universal-hero-section .hero-actions-container {
+    flex-direction: column !important;
+    gap: 40px !important;
+    align-items: center !important;
+  }
+  
+  .homepage .universal-hero-section .hero-left,
+  .homepage .universal-hero-section .hero-right {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+  
+  .homepage .universal-hero-section .hero-title {
+    font-size: 3rem !important;
+    text-align: center !important;
+    max-width: 100% !important;
+    min-height: auto !important;
+    display: block !important;
+  }
+  
+  .homepage .universal-hero-section .hero-description {
+    text-align: center !important;
+    max-width: 100% !important;
+    min-height: auto !important;
+    display: block !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .homepage .universal-hero-section {
+    padding-top: calc(var(--hero-safe-area, 250px) + var(--hero-viewport-offset, 12vh)) !important;
+  }
+  
+  /* Адаптивность для остальных страниц на мобильных */
+  .contact-page .universal-hero-section,
+  .promotions-page .universal-hero-section,
+  .services-page .universal-hero-section,
+  .cruises-page .universal-hero-section,
+  .foreign-page .universal-hero-section,
+  .hotels-page .universal-hero-section,
+  .tours-page .universal-hero-section {
+    min-height: 120px !important; /* Еще меньше высота на мобильных */
+    padding-top: 10px !important;
+  }
+  
+  .homepage .universal-hero-section .hero-content {
+    flex-direction: column !important;
+    padding: 60px 15px !important;
+    gap: 30px !important;
+    min-height: calc(100vh - var(--hero-safe-area, 250px) - var(--hero-viewport-offset, 12vh)) !important;
+  }
+  
+  .homepage .universal-hero-section .hero-text-container {
+    flex-direction: column !important;
+    gap: 15px !important;
+    align-items: center !important;
+    margin: 15px auto 0 auto !important;
+  }
+  
+  .homepage .universal-hero-section .hero-actions-container {
+    flex-direction: column !important;
+    gap: 30px !important;
+    align-items: center !important;
+  }
+  
+  .homepage .universal-hero-section .hero-left,
+  .homepage .universal-hero-section .hero-right {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+  
+  .homepage .universal-hero-section .hero-title {
+    font-size: 2.5rem !important;
+    text-align: center !important;
+    max-width: 100% !important;
+    min-height: auto !important;
+    display: block !important;
+  }
+  
+  .homepage .universal-hero-section .hero-description {
+    font-size: 1.1rem !important;
+    text-align: center !important;
+    max-width: 100% !important;
+    min-height: auto !important;
+    display: block !important;
+  }
+}
+
+.hero-background {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+
+.hero-background-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  filter: brightness(0.8) contrast(1.1);
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  z-index: -1;
+}
+
+.hero-background-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  filter: brightness(0.8) contrast(1.1);
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  z-index: -1;
+  /* Дополнительные стили для видео */
+  transition: opacity 0.8s ease-in-out;
+  opacity: 1;
+  /* Улучшенное воспроизведение */
+  -webkit-backface-visibility: hidden;
+  -webkit-transform: translate3d(0, 0, 0);
+  -webkit-perspective: 1000;
+  /* Полное отключение взаимодействия */
+  pointer-events: none;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+/* Специальные классы для автовоспроизведения и зацикливания */
+.hero-background-video[autoplay] {
+  /* Принудительное автовоспроизведение */
+  animation: video-autoplay 0.1s ease-in-out;
+}
+
+.hero-background-video[loop] {
+  /* Принудительное зацикливание */
+  animation: video-loop 0.1s ease-in-out;
+}
+
+/* Анимации для улучшения воспроизведения */
+@keyframes video-autoplay {
+  0% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes video-loop {
+  0% {
+    transform: translateZ(0) scale(1);
+  }
+  100% {
+    transform: translateZ(0) scale(1.001);
+  }
+}
+
+/* Дополнительные стили для надежного автовоспроизведения */
+.hero-background-video[autoplay][loop] {
+  /* Комбинированные стили для автовоспроизведения и зацикливания */
+  -webkit-animation-play-state: running;
+  animation-play-state: running;
+  /* Принудительное обновление для лучшей производительности */
+  -webkit-transform: translate3d(0, 0, 0) scale(1);
+  transform: translate3d(0, 0, 0) scale(1);
+  /* Улучшенная обработка для мобильных устройств */
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.hero-fallback-image {
+  z-index: -1;
+  transition: opacity 0.8s ease-in-out;
+  opacity: 1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Полное отключение взаимодействия */
+  pointer-events: none;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.hero-default-background {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #CDA434 0%, #90ccec 100%);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 2;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 3;
+  text-align: center;
+  color: white;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.hero-title {
+  font-size: 3.5rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  line-height: 1.2;
+}
+
+.hero-subtitle {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  opacity: 0.9;
+}
+
+.hero-description {
+  font-size: 1.2rem;
+  opacity: 0.95;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Дополнительные стили для улучшения автовоспроизведения */
+.hero-background-video[autoplay][muted] {
+  /* Специальные стили для видео с автовоспроизведением и без звука */
+  -webkit-media-controls: none;
+  -webkit-media-controls-panel: none;
+  -webkit-media-controls-play-button: none;
+  -webkit-media-controls-timeline: none;
+  -webkit-media-controls-current-time-display: none;
+  -webkit-media-controls-time-remaining-display: none;
+  -webkit-media-controls-mute-button: none;
+  -webkit-media-controls-volume-slider: none;
+  -webkit-media-controls-fullscreen-button: none;
+}
+
+/* Улучшенная производительность для видео */
+.hero-background-video {
+  /* Принудительное использование GPU для рендеринга */
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+  /* Оптимизация для видео */
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  /* Улучшенная обработка пикселей */
+  -webkit-perspective: 1000px;
+  perspective: 1000px;
+  /* Принудительное обновление слоя */
+  will-change: transform, opacity;
+}
+
+/* Специальные стили для мобильных устройств */
+@media (max-width: 768px) {
+  .hero-background-video[autoplay] {
+    /* Улучшенное автовоспроизведение на мобильных */
+    -webkit-transform: translate3d(0, 0, 0) scale(1);
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  
+  .hero-background-video[loop] {
+    /* Улучшенное зацикливание на мобильных */
+    -webkit-animation-duration: 0.05s;
+    animation-duration: 0.05s;
+  }
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .universal-hero-section {
+    min-height: 50vh;
+  }
+  
+  .hero-content {
+    padding: 1rem;
+  }
+  
+  .hero-title {
+    font-size: 2.5rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.5rem;
+  }
+  
+  .hero-description {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 2rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.2rem;
+  }
+  
+  .hero-description {
+    font-size: 0.9rem;
+  }
+}
+
+/* Дополнительные стили для надежного зацикливания */
+.hero-background-video[loop] {
+  /* Принудительное зацикливание */
+  -webkit-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+  /* Улучшенная обработка конца видео */
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+}
+
+/* Специальные стили для разных браузеров */
+@supports (-webkit-appearance: none) {
+  /* WebKit браузеры (Safari, Chrome) */
+  .hero-background-video[autoplay][loop] {
+    -webkit-animation: video-autoplay-loop 0.1s ease-in-out infinite;
+    animation: video-autoplay-loop 0.1s ease-in-out infinite;
+  }
+}
+
+@supports not (-webkit-appearance: none) {
+  /* Не-WebKit браузеры (Firefox) */
+  .hero-background-video[autoplay][loop] {
+    animation: video-autoplay-loop 0.1s ease-in-out infinite;
+  }
+}
+
+/* Комбинированная анимация для автовоспроизведения и зацикливания */
+@keyframes video-autoplay-loop {
+  0% {
+    opacity: 1;
+    transform: translateZ(0) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translateZ(0) scale(1.001);
+  }
+  100% {
+    opacity: 1;
+    transform: translateZ(0) scale(1);
+  }
+}

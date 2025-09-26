@@ -1,0 +1,34 @@
+Old,New,Notes
+CRA,Vite 6 (SWC) + SSR (React Router v7 streaming),Preserve React 19
+react-scripts,@vitejs/plugin-react-swc,Dev server/build
+React 19,React 19 (no change),Enable RSC/streaming
+React Router v7,React Router v7 (SSR),Server + client routes
+TypeScript 4.9,TypeScript 5.6,Update tsconfig & types
+styled-components 6,styled-components 6 (no change),SSR styles extraction
+axios,axios (no change),Consider react-query later
+framer-motion,framer-motion (no change),
+react-hook-form,react-hook-form (no change),
+react-hot-toast,react-hot-toast (no change),
+Jest + RTL,Vitest 2 + RTL 16,Keep jest-dom APIs
+MSW -,MSW 2,Mock API
+Playwright -,Playwright 1.46,Add e2e + visual
+Node 22 + Express 4/5,Node 22 + Express 5,Add Helmet/rate-limit/csurf
+SQLite3,MariaDB 11.4 (Galera-ready),Migrate schema + data
+bcryptjs,argon2id,Stronger hashing
+jsonwebtoken,JWT + refresh rotation,HTTP-only cookies
+multer,MinIO (S3) + multer-s3 or S3 SDK,Presigned upload
+cors,helmet + strict CORS,OWASP policy
+dotenv,dotenv + docker secrets,Env via compose secrets
+Local uploads,MinIO bucket,Versioned objects
+Static build,Nginx (HTTP/3 + Brotli),Reverse proxy
+Sessions -,Redis,Cache + sessions
+Logging -,Loki,JSON logs via pino -> promtail
+Metrics -,Prometheus,Express exporter + Node exporter
+Tracing -,OpenTelemetry,Auto-instrumentation
+Monitoring -,Grafana,Dashboards
+Docker -,Docker 27 + BuildKit,Multi-arch images
+Compose -,docker-compose v2.26,Profiles dev/test/prod
+CI -,GitHub Actions (planned),Build/test/lint/security
+
+
+

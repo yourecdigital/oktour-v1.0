@@ -1,0 +1,190 @@
+// Datasource: MariaDB 11.4
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator jsonSchema {
+  provider = "prisma-json-schema-generator"
+}
+
+// Enums
+enum UserRole {
+  ADMIN
+  AGENT
+  CUSTOMER
+}
+
+// Core models (merged from SQLite schemas; IDs as BigInt)
+model User {
+  id           BigInt   @id @default(autoincrement()) @db.BigInt
+  uuid         String   @unique @db.Char(36)
+  email        String   @unique
+  passwordHash String
+  name         String
+  phone        String?
+  role         UserRole @default(CUSTOMER)
+  bonusPoints  Int      @default(0)
+  createdAt    DateTime @default(now()) @map("created_at")
+  BonusHistory BonusHistory[]
+  Orders       Order[]
+}
+
+model Tour {
+  id          BigInt   @id @default(autoincrement()) @db.BigInt
+  uuid        String   @unique @db.Char(36)
+  locale      String   @default("ru")
+  slug        String
+  name        String
+  description String?  @db.Text
+  descriptionI18n String? @db.Text("longtext")
+  price       Decimal  @db.Decimal(10,2)
+  duration    String?
+  destination String?
+  city        String?
+  category    String?  @default("Общие туры")
+  tourType    String?  @map("tour_type")
+  imageUrl    String?  @map("image_url")
+  available   Boolean  @default(true)
+  meta        Json?
+
+  @@index([locale, slug])
+}
+
+model Hotel {
+  id          BigInt   @id @default(autoincrement()) @db.BigInt
+  uuid        String   @unique @db.Char(36)
+  name        String
+  description String?  @db.Text
+  price       Decimal  @db.Decimal(10,2)
+  location    String
+  stars       Int?
+  category    String?  @default("Общие отели")
+  city        String?
+  imageUrl    String?  @map("image_url")
+  available   Boolean  @default(true)
+  meta        Json?
+}
+
+model ForeignTour {
+  id          BigInt   @id @default(autoincrement()) @db.BigInt
+  uuid        String   @unique @db.Char(36)
+  name        String
+  description String?  @db.Text
+  price       Decimal  @db.Decimal(10,2)
+  country     String
+  duration    String?
+  highlights  Json?
+  tourType    String?  @map("tour_type")
+  category    String?  @default("Общие зарубежные туры")
+  imageUrl    String?  @map("image_url")
+  available   Boolean  @default(true)
+  meta        Json?
+}
+
+model Cruise {
+  id          BigInt   @id @default(autoincrement()) @db.BigInt
+  uuid        String   @unique @db.Char(36)
+  name        String
+  description String?  @db.Text
+  price       Decimal  @db.Decimal(10,2)
+  departure   String
+  duration    String?
+  destination String?
+  category    String?  @default("Общие круизы")
+  imageUrl    String?  @map("image_url")
+  available   Boolean  @default(true)
+  meta        Json?
+}
+
+model Service {
+  id          BigInt   @id @default(autoincrement()) @db.BigInt
+  uuid        String   @unique @db.Char(36)
+  name        String
+  description String?  @db.Text
+  price       Decimal  @db.Decimal(10,2)
+  category    String?  @default("Общие услуги")
+  imageUrl    String?  @map("image_url")
+  available   Boolean  @default(true)
+  meta        Json?
+}
+
+model Promotion {
+  id              BigInt   @id @default(autoincrement()) @db.BigInt
+  uuid            String   @unique @db.Char(36)
+  title           String
+  description     String?  @db.Text
+  discountPercent Int?     @map("discount_percent")
+  validUntil      DateTime? @map("valid_until")
+  category        String?  @default("Общие акции")
+  imageUrl        String?  @map("image_url")
+  active          Boolean  @default(true)
+}
+
+model HeroBackground {
+  id                 BigInt   @id @default(autoincrement()) @db.BigInt
+  pageName           String   @unique @map("page_name")
+  backgroundImageUrl String?  @map("background_image_url")
+  backgroundType     String   @default("image") @map("background_type")
+  fallbackImageUrl   String?  @map("fallback_image_url")
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @default(now()) @map("updated_at")
+}
+
+model BonusHistory {
+  id        BigInt   @id @default(autoincrement()) @db.BigInt
+  userId    BigInt
+  points    Int
+  type      String
+  reason    String?
+  createdAt DateTime @default(now()) @map("created_at")
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model CartItem {
+  id         BigInt   @id @default(autoincrement()) @db.BigInt
+  userId     BigInt
+  itemId     BigInt
+  itemType   String
+  name       String
+  description String?
+  price      Decimal  @db.Decimal(10,2)
+  quantity   Int      @default(1)
+  addedAt    DateTime @default(now()) @map("added_at")
+  duration   String?
+  destination String?
+  capacity   String?
+  features   Json?
+  country    String?
+  highlights Json?
+  departure  String?
+  category   String?
+}
+
+model Order {
+  id          BigInt   @id @default(autoincrement()) @db.BigInt
+  userId      BigInt
+  totalAmount Decimal  @db.Decimal(10,2) @map("total_amount")
+  status      String   @default("pending")
+  createdAt   DateTime @default(now()) @map("created_at")
+  items       OrderItem[]
+  user        User     @relation(fields: [userId], references: [id])
+}
+
+model OrderItem {
+  id        BigInt   @id @default(autoincrement()) @db.BigInt
+  orderId   BigInt
+  itemId    BigInt
+  itemType  String
+  quantity  Int
+  price     Decimal  @db.Decimal(10,2)
+  order     Order    @relation(fields: [orderId], references: [id])
+}
+
+
+
+

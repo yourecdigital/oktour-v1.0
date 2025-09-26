@@ -1,0 +1,20 @@
+{
+  "ci": {
+    "collect": {
+      "url": ["http://localhost"],
+      "startServerCommand": "npm run preview",
+      "numberOfRuns": 1
+    },
+    "assert": {
+      "assertions": {
+        "categories:performance": ["error", {"minScore": 0.95}],
+        "categories:seo": ["error", {"minScore": 1}],
+        "categories:accessibility": ["error", {"minScore": 1}]
+      }
+    }
+  }
+}
+
+
+
+

@@ -1,0 +1,14 @@
+node_modules
+npm-debug.log
+.env
+*.sqlite
+build
+.git
+.gitignore
+.DS_Store
+.cache
+**/.vite
+coverage
+
+
+
