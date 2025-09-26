@@ -1,173 +1,91 @@
-# СочиТур - Туристическое агентство
+# 🚀 Tour Monorepo 2025
 
-Полнофункциональное веб-приложение для туристического агентства с системой регистрации, корзиной покупок и интеграцией с Telegram ботом.
+[![Node.js](https://img.shields.io/badge/Node.js-18.17.0-green.svg)](https://nodejs.org/)
+[![pnpm](https://img.shields.io/badge/pnpm-8.15.0-orange.svg)](https://pnpm.io/)
+[![Turbo](https://img.shields.io/badge/Turbo-1.13.0-blue.svg)](https://turbo.build/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.3.0-blue.svg)](https://www.typescriptlang.org/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-## 🚀 Технологии
+Modern travel booking platform built with cutting-edge monorepo architecture.
 
-### Frontend
-- React 19
-- TypeScript
-- Styled Components
-- React Router DOM
-- React Hook Form
-- Axios
-- React Hot Toast
+## 🏗️ Architecture
 
-### Backend
-- Node.js
-- Express.js
-- SQLite3
-- JWT (JSON Web Tokens)
-- bcryptjs
-- node-telegram-bot-api
+```
+tour-monorepo-2025/
+├── apps/
+│   ├── web/old-src/      # React frontend (legacy)
+│   ├── api/old-src/      # Express.js backend (legacy)
+│   └── admin/            # Admin dashboard
+├── packages/
+│   └── shared/           # Shared utilities & types
+├── infra/
+│   └── docker/           # Docker configurations
+├── package.json          # Root package.json
+├── pnpm-workspace.yaml   # pnpm workspace config
+├── turbo.json           # Turbo build system
+└── README.md            # This file
+```
 
-## 📋 Функциональность
+## 🚀 Quick Start
 
-- ✅ Регистрация и авторизация пользователей
-- ✅ Система бонусных баллов
-- ✅ Каталог туров с возможностью добавления в корзину
-- ✅ Корзина покупок
-- ✅ Оформление заказов
-- ✅ История заказов
-- ✅ Интеграция с Telegram ботом для уведомлений
-- ✅ Адаптивный дизайн
+### Prerequisites
+- Node.js 18.17.0+
+- pnpm 8.0.0+
 
-## 🛠️ Установка и настройка
-
-### 1. Клонирование репозитория
+### Installation
 ```bash
-git clone <repository-url>
-cd sochi-travel
+# Install dependencies
+pnpm install
+
+# Start development servers
+pnpm dev
+
+# Build all packages
+pnpm build
+
+# Run linting
+pnpm lint
+
+# Run tests
+pnpm test
 ```
 
-### 2. Установка зависимостей
+## 📦 Workspaces
+
+- **apps/web** - React frontend application
+- **apps/api** - Express.js backend API
+- **apps/admin** - Admin dashboard
+- **packages/shared** - Shared utilities and types
+
+## 🛠️ Tech Stack
+
+- **Frontend**: React 18, TypeScript, Styled Components
+- **Backend**: Node.js, Express.js, SQLite
+- **Monorepo**: pnpm workspaces + Turbo
+- **Infrastructure**: Docker, Nginx
+
+## 📝 Legacy Code Migration
+
+Legacy code has been preserved in:
+- `apps/web/old-src/` - Original React application
+- `apps/api/old-src/` - Original Express.js server
+
+## 🔧 Development
+
 ```bash
-npm install
+# Install pnpm globally
+npm install -g pnpm@8.15.0
+
+# Install dependencies
+pnpm install
+
+# Start all services
+pnpm dev
+
+# Build for production
+pnpm build
 ```
 
-### 3. Настройка переменных окружения
+## 📄 License
 
-Создайте файл `.env` в корневой папке проекта:
-
-```env
-# JWT Secret (замените на свой секретный ключ)
-JWT_SECRET=your-super-secret-jwt-key-here
-
-# Telegram Bot Token (получите у @BotFather)
-TELEGRAM_BOT_TOKEN=your-telegram-bot-token
-
-# Telegram Chat ID (ID чата для получения уведомлений)
-TELEGRAM_CHAT_ID=your-telegram-chat-id
-
-# Порт сервера (по умолчанию 5000)
-PORT=5000
-```
-
-### 4. Настройка Telegram бота
-
-1. Создайте бота через [@BotFather](https://t.me/BotFather)
-2. Получите токен бота
-3. Добавьте бота в нужный чат
-4. Получите ID чата (можно использовать @userinfobot)
-5. Добавьте токен и ID чата в файл `.env`
-
-### 5. Запуск проекта
-
-#### Режим разработки (одновременно frontend и backend)
-```bash
-npm run dev
-```
-
-#### Только frontend
-```bash
-npm start
-```
-
-#### Только backend
-```bash
-npm run server
-```
-
-## 🌐 Доступ к приложению
-
-- **Frontend**: http://localhost:3000
-- **Backend API**: http://localhost:5000
-
-## 📱 API Endpoints
-
-### Аутентификация
-- `POST /api/register` - Регистрация пользователя
-- `POST /api/login` - Вход в систему
-- `GET /api/profile` - Получение профиля пользователя
-
-### Туры
-- `GET /api/tours` - Получение списка туров
-
-### Корзина
-- `GET /api/cart` - Получение корзины пользователя
-- `POST /api/cart/add` - Добавление тура в корзину
-- `DELETE /api/cart/:id` - Удаление тура из корзины
-
-### Заказы
-- `POST /api/orders` - Создание заказа
-- `GET /api/orders` - Получение истории заказов
-
-### Бонусы
-- `POST /api/bonus/add` - Добавление бонусных баллов
-
-## 🗄️ Структура базы данных
-
-### Таблицы
-- `users` - Пользователи
-- `tours` - Туры
-- `cart` - Корзина
-- `orders` - Заказы
-- `order_items` - Элементы заказов
-
-## 🎨 Основные страницы
-
-- **Главная** (`/`) - Главная страница с турами и кнопкой получения бонусов
-- **Туры** (`/tours`) - Каталог всех туров
-- **Корзина** (`/cart`) - Корзина покупок
-- **Профиль** (`/profile`) - Профиль пользователя
-- **Заказы** (`/orders`) - История заказов
-- **Вход** (`/login`) - Страница входа
-- **Регистрация** (`/register`) - Страница регистрации
-
-## 🔧 Особенности
-
-### Система бонусов
-- Пользователи могут получить 500 бонусных баллов нажав кнопку "Получить 500 бонусов"
-- Бонусы отображаются в профиле пользователя
-
-### Telegram интеграция
-- При создании заказа автоматически отправляется уведомление в Telegram
-- Уведомление содержит информацию о заказе, покупателе и товарах
-
-### Безопасность
-- Пароли хешируются с помощью bcrypt
-- JWT токены для аутентификации
-- Валидация данных на клиенте и сервере
-
-## 🚀 Развертывание
-
-### Production сборка
-```bash
-npm run build
-```
-
-### Запуск production сервера
-```bash
-npm run server
-```
-
-## 📞 Поддержка
-
-При возникновении проблем:
-1. Проверьте правильность настройки переменных окружения
-2. Убедитесь, что порты 3000 и 5000 свободны
-3. Проверьте подключение к интернету для работы с Telegram API
-
-## 📄 Лицензия
-
-MIT License
+MIT License - see [LICENSE](LICENSE) file for details.
