@@ -1,190 +1,151 @@
-// Datasource: MariaDB 11.4
-datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
-}
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
   provider = "prisma-client-js"
 }
 
-generator jsonSchema {
-  provider = "prisma-json-schema-generator"
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
-// Enums
-enum UserRole {
-  ADMIN
-  AGENT
-  CUSTOMER
-}
-
-// Core models (merged from SQLite schemas; IDs as BigInt)
 model User {
-  id           BigInt   @id @default(autoincrement()) @db.BigInt
-  uuid         String   @unique @db.Char(36)
-  email        String   @unique
-  passwordHash String
-  name         String
-  phone        String?
-  role         UserRole @default(CUSTOMER)
-  bonusPoints  Int      @default(0)
-  createdAt    DateTime @default(now()) @map("created_at")
-  BonusHistory BonusHistory[]
-  Orders       Order[]
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String
+  phone     String?
+  role      Role     @default(USER)
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  orders    Order[]
+  reviews   Review[]
+
+  @@map("users")
 }
 
 model Tour {
-  id          BigInt   @id @default(autoincrement()) @db.BigInt
-  uuid        String   @unique @db.Char(36)
-  locale      String   @default("ru")
-  slug        String
-  name        String
-  description String?  @db.Text
-  descriptionI18n String? @db.Text("longtext")
-  price       Decimal  @db.Decimal(10,2)
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?   @db.Text
+  price       Decimal  @db.Decimal(10, 2)
   duration    String?
-  destination String?
-  city        String?
-  category    String?  @default("Общие туры")
-  tourType    String?  @map("tour_type")
+  location    String?
   imageUrl    String?  @map("image_url")
-  available   Boolean  @default(true)
-  meta        Json?
+  categoryId  Int      @map("category_id")
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
-  @@index([locale, slug])
+  // Relations
+  category   Category @relation(fields: [categoryId], references: [id])
+  orders     Order[]
+  reviews    Review[]
+  media      Media[]
+
+  @@map("tours")
 }
 
-model Hotel {
-  id          BigInt   @id @default(autoincrement()) @db.BigInt
-  uuid        String   @unique @db.Char(36)
-  name        String
+model Category {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
   description String?  @db.Text
-  price       Decimal  @db.Decimal(10,2)
-  location    String
-  stars       Int?
-  category    String?  @default("Общие отели")
-  city        String?
-  imageUrl    String?  @map("image_url")
-  available   Boolean  @default(true)
-  meta        Json?
-}
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
-model ForeignTour {
-  id          BigInt   @id @default(autoincrement()) @db.BigInt
-  uuid        String   @unique @db.Char(36)
-  name        String
-  description String?  @db.Text
-  price       Decimal  @db.Decimal(10,2)
-  country     String
-  duration    String?
-  highlights  Json?
-  tourType    String?  @map("tour_type")
-  category    String?  @default("Общие зарубежные туры")
-  imageUrl    String?  @map("image_url")
-  available   Boolean  @default(true)
-  meta        Json?
-}
+  // Relations
+  tours Tour[]
 
-model Cruise {
-  id          BigInt   @id @default(autoincrement()) @db.BigInt
-  uuid        String   @unique @db.Char(36)
-  name        String
-  description String?  @db.Text
-  price       Decimal  @db.Decimal(10,2)
-  departure   String
-  duration    String?
-  destination String?
-  category    String?  @default("Общие круизы")
-  imageUrl    String?  @map("image_url")
-  available   Boolean  @default(true)
-  meta        Json?
-}
-
-model Service {
-  id          BigInt   @id @default(autoincrement()) @db.BigInt
-  uuid        String   @unique @db.Char(36)
-  name        String
-  description String?  @db.Text
-  price       Decimal  @db.Decimal(10,2)
-  category    String?  @default("Общие услуги")
-  imageUrl    String?  @map("image_url")
-  available   Boolean  @default(true)
-  meta        Json?
-}
-
-model Promotion {
-  id              BigInt   @id @default(autoincrement()) @db.BigInt
-  uuid            String   @unique @db.Char(36)
-  title           String
-  description     String?  @db.Text
-  discountPercent Int?     @map("discount_percent")
-  validUntil      DateTime? @map("valid_until")
-  category        String?  @default("Общие акции")
-  imageUrl        String?  @map("image_url")
-  active          Boolean  @default(true)
+  @@map("categories")
 }
 
 model HeroBackground {
-  id                 BigInt   @id @default(autoincrement()) @db.BigInt
-  pageName           String   @unique @map("page_name")
-  backgroundImageUrl String?  @map("background_image_url")
-  backgroundType     String   @default("image") @map("background_type")
-  fallbackImageUrl   String?  @map("fallback_image_url")
-  createdAt          DateTime @default(now()) @map("created_at")
-  updatedAt          DateTime @default(now()) @map("updated_at")
+  id          Int      @id @default(autoincrement())
+  page        String
+  type        MediaType
+  url         String
+  thumbnailUrl String? @map("thumbnail_url")
+  fallbackUrl String? @map("fallback_url")
+  isActive    Boolean  @default(true) @map("is_active")
+  order       Int      @default(0)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("hero_backgrounds")
 }
 
-model BonusHistory {
-  id        BigInt   @id @default(autoincrement()) @db.BigInt
-  userId    BigInt
-  points    Int
-  type      String
-  reason    String?
-  createdAt DateTime @default(now()) @map("created_at")
-  user      User     @relation(fields: [userId], references: [id])
-}
+model Media {
+  id          Int      @id @default(autoincrement())
+  filename    String
+  originalName String  @map("original_name")
+  mimeType    String   @map("mime_type")
+  size        Int
+  url         String
+  thumbnailUrl String? @map("thumbnail_url")
+  type        MediaType
+  tourId      Int?     @map("tour_id")
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
-model CartItem {
-  id         BigInt   @id @default(autoincrement()) @db.BigInt
-  userId     BigInt
-  itemId     BigInt
-  itemType   String
-  name       String
-  description String?
-  price      Decimal  @db.Decimal(10,2)
-  quantity   Int      @default(1)
-  addedAt    DateTime @default(now()) @map("added_at")
-  duration   String?
-  destination String?
-  capacity   String?
-  features   Json?
-  country    String?
-  highlights Json?
-  departure  String?
-  category   String?
+  // Relations
+  tour Tour? @relation(fields: [tourId], references: [id])
+
+  @@map("media")
 }
 
 model Order {
-  id          BigInt   @id @default(autoincrement()) @db.BigInt
-  userId      BigInt
-  totalAmount Decimal  @db.Decimal(10,2) @map("total_amount")
-  status      String   @default("pending")
-  createdAt   DateTime @default(now()) @map("created_at")
-  items       OrderItem[]
-  user        User     @relation(fields: [userId], references: [id])
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
+  tourId    Int      @map("tour_id")
+  quantity  Int      @default(1)
+  totalPrice Decimal @db.Decimal(10, 2) @map("total_price")
+  status    OrderStatus @default(PENDING)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  user User @relation(fields: [userId], references: [id])
+  tour Tour @relation(fields: [tourId], references: [id])
+
+  @@map("orders")
 }
 
-model OrderItem {
-  id        BigInt   @id @default(autoincrement()) @db.BigInt
-  orderId   BigInt
-  itemId    BigInt
-  itemType  String
-  quantity  Int
-  price     Decimal  @db.Decimal(10,2)
-  order     Order    @relation(fields: [orderId], references: [id])
+model Review {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
+  tourId    Int      @map("tour_id")
+  rating    Int      @db.TinyInt
+  comment   String?  @db.Text
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  user User @relation(fields: [userId], references: [id])
+  tour Tour @relation(fields: [tourId], references: [id])
+
+  @@map("reviews")
 }
 
+// Enums
+enum Role {
+  USER
+  ADMIN
+}
 
+enum MediaType {
+  IMAGE
+  VIDEO
+}
 
-
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
