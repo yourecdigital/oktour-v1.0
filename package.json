@@ -14,7 +14,12 @@
     "lint": "turbo run lint",
     "test": "turbo run test",
     "clean": "turbo run clean",
-    "type-check": "turbo run type-check"
+    "type-check": "turbo run type-check",
+    "docker:dev": "docker-compose -f docker-compose.dev.yml up -d",
+    "docker:down": "docker-compose -f docker-compose.dev.yml down",
+    "docker:logs": "docker-compose -f docker-compose.dev.yml logs -f",
+    "docker:build": "docker-compose -f docker-compose.dev.yml build",
+    "setup:dev": "node scripts/generate-env.js && chmod +x scripts/dev-setup.sh && ./scripts/dev-setup.sh"
   },
   "devDependencies": {
     "turbo": "^1.13.0",

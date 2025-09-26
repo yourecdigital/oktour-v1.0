@@ -1,26 +1,39 @@
-# syntax=docker/dockerfile:1.7-labs
-
-FROM node:22-alpine AS deps
+# Multi-stage build for Express API
+FROM node:18-alpine AS base
 WORKDIR /app
 COPY package*.json ./
-RUN --mount=type=cache,target=/root/.npm npm ci --omit=dev
+RUN npm ci --only=production
 
-FROM node:22-alpine AS build
+FROM node:18-alpine AS deps
 WORKDIR /app
-COPY . .
-RUN --mount=type=cache,target=/root/.npm npm ci && npm run prisma:generate && npm run -w apps/api build || true
+COPY package*.json ./
+RUN npm install
 
-FROM gcr.io/distroless/nodejs22-debian12:nonroot
+FROM node:18-alpine AS builder
 WORKDIR /app
-USER nonroot
-ENV NODE_ENV=production
 COPY --from=deps /app/node_modules ./node_modules
-COPY apps/api ./apps/api
-COPY package.json ./package.json
-EXPOSE 4000
-HEALTHCHECK --interval=30s --timeout=3s --start-period=10s CMD ["/nodejs/bin/node", "-e", "fetch('http://localhost:4000/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
-CMD ["apps/api/src/index.js"]
+COPY . .
+RUN npm run build || echo "No build script found"
 
+FROM node:18-alpine AS production
+WORKDIR /app
+COPY --from=base /app/node_modules ./node_modules
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/src ./src
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/server ./server
+EXPOSE 5000
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:5000/api/health || exit 1
+CMD ["node", "server/index.js"]
 
-
-
+# Development stage
+FROM node:18-alpine AS development
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+EXPOSE 5000
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:5000/api/health || exit 1
+CMD ["npm", "start"]

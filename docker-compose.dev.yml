@@ -1,0 +1,167 @@
+version: '3.8'
+
+services:
+  # Database
+  mariadb:
+    image: mariadb:11.4
+    container_name: tour-mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: ${DB_NAME:-tour_db}
+      MYSQL_USER: ${DB_USER:-tour_user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-tour_password}
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./infra/docker/mariadb/init:/docker-entrypoint-initdb.d
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+    networks:
+      - tour-network
+
+  # Redis Cache
+  redis:
+    image: redis:7.4-alpine
+    container_name: tour-redis
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      timeout: 3s
+      retries: 5
+    networks:
+      - tour-network
+
+  # MinIO S3 Storage
+  minio:
+    image: minio/minio:latest
+    container_name: tour-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin123}
+    volumes:
+      - s3_data:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      timeout: 3s
+      retries: 5
+    networks:
+      - tour-network
+
+  # API Service
+  api:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+      target: development
+    container_name: tour-api
+    environment:
+      NODE_ENV: development
+      DB_HOST: mariadb
+      DB_PORT: 3306
+      DB_NAME: ${DB_NAME:-tour_db}
+      DB_USER: ${DB_USER:-tour_user}
+      DB_PASSWORD: ${DB_PASSWORD:-tour_password}
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: ${JWT_SECRET:-your-secret-key-here}
+      MINIO_ENDPOINT: minio
+      MINIO_PORT: 9000
+      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD:-minioadmin123}
+    volumes:
+      - ./apps/api:/app
+      - /app/node_modules
+      - ./server/uploads:/app/uploads
+    ports:
+      - "5000:5000"
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    networks:
+      - tour-network
+
+  # Web Service
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+      target: development
+    container_name: tour-web
+    environment:
+      NODE_ENV: development
+      VITE_API_URL: http://localhost:5000
+      VITE_DOMAIN: ${DOMAIN:-localhost}
+    volumes:
+      - ./apps/web:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+    networks:
+      - tour-network
+
+  # Admin Service
+  admin:
+    build:
+      context: ./apps/admin
+      dockerfile: Dockerfile
+      target: development
+    container_name: tour-admin
+    environment:
+      NODE_ENV: development
+      VITE_API_URL: http://localhost:5000
+      VITE_DOMAIN: ${DOMAIN:-localhost}
+    volumes:
+      - ./apps/admin:/app
+      - /app/node_modules
+    ports:
+      - "3001:3001"
+    depends_on:
+      - api
+    networks:
+      - tour-network
+
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    container_name: tour-nginx
+    volumes:
+      - ./infra/nginx/nginx.dev.conf:/etc/nginx/nginx.conf
+      - ./infra/nginx/conf.d:/etc/nginx/conf.d
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - web
+      - api
+      - admin
+    networks:
+      - tour-network
+
+volumes:
+  db_data:
+    name: tour_db_data
+  redis_data:
+    name: tour_redis_data
+  s3_data:
+    name: tour_s3_data
+
+networks:
+  tour-network:
+    name: tour-network
+    driver: bridge
