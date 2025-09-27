@@ -27,3 +27,4 @@ const ToursPage: React.FC = () => {
 };
 
 export default ToursPage;
+

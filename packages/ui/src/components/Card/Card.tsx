@@ -76,3 +76,4 @@ const StyledCard = styled.div<CardProps>`
 export const Card: React.FC<CardProps> = ({ children, ...props }) => {
   return <StyledCard {...props}>{children}</StyledCard>;
 };
+

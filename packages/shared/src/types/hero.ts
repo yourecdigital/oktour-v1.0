@@ -38,3 +38,4 @@ export interface HeroSection {
   createdAt: string;
   updatedAt: string;
 }
+

@@ -121,3 +121,4 @@ export const HeroVideo: React.FC<HeroVideoProps> = ({
     </VideoContainer>
   );
 };
+

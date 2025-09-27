@@ -20,3 +20,4 @@ export const isValidUrl = (url: string): boolean => {
 export const isValidPrice = (price: number): boolean => {
   return price >= 0 && Number.isFinite(price);
 };
+

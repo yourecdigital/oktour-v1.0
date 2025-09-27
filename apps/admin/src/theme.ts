@@ -187,3 +187,4 @@ export const useThemeMode = () => {
 export const createAppTheme = (mode: 'light' | 'dark') => {
   return createTheme(mode === 'light' ? lightTheme : darkTheme);
 };
+

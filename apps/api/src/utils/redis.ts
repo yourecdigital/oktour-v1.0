@@ -17,3 +17,4 @@ redisClient.on('connect', () => {
 redisClient.connect().catch(console.error);
 
 export default redisClient;
+

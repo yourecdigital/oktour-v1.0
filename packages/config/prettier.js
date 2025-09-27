@@ -13,3 +13,4 @@ module.exports = {
   jsxSingleQuote: true,
   proseWrap: 'preserve',
 };
+

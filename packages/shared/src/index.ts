@@ -6,3 +6,4 @@ export * from './types/hero';
 // Utilities
 export * from './utils/validation';
 export * from './utils/formatting';
+

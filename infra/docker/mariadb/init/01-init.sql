@@ -64,3 +64,4 @@ INSERT INTO categories (name, description, is_active) VALUES
 ('Cruises', 'Sea and river cruises', TRUE),
 ('Hotels', 'Hotel accommodations', TRUE)
 ON DUPLICATE KEY UPDATE name=name;
+

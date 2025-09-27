@@ -1,0 +1,305 @@
+name: Backups - Daily Database & Storage
+
+on:
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      backup_type:
+        description: 'Type of backup to run'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+        - all
+        - database
+        - storage
+        - cleanup
+
+env:
+  BACKUP_DATE: ${{ github.run_number }}-$(date +%Y%m%d-%H%M%S)
+
+jobs:
+  # Database Backup
+  database-backup:
+    name: MariaDB Backup
+    runs-on: ubuntu-latest
+    if: github.event.inputs.backup_type == 'all' || github.event.inputs.backup_type == 'database' || github.event_name == 'schedule'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup AWS CLI
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION || 'us-east-1' }}
+
+      - name: Create database backup
+        run: |
+          # Create backup directory
+          mkdir -p backups/database
+          
+          # Create MariaDB dump
+          mysqldump \
+            --host=${{ secrets.DB_HOST || 'localhost' }} \
+            --port=${{ secrets.DB_PORT || '3306' }} \
+            --user=${{ secrets.DB_USER || 'tour_user' }} \
+            --password=${{ secrets.DB_PASSWORD }} \
+            --single-transaction \
+            --routines \
+            --triggers \
+            --events \
+            --hex-blob \
+            --opt \
+            ${{ secrets.DB_NAME || 'tour_db' }} > backups/database/tour_db_${{ env.BACKUP_DATE }}.sql
+          
+          # Compress the backup
+          gzip backups/database/tour_db_${{ env.BACKUP_DATE }}.sql
+          
+          # Create backup info file
+          cat > backups/database/backup_info_${{ env.BACKUP_DATE }}.txt << EOF
+          Backup Date: $(date)
+          Database: ${{ secrets.DB_NAME || 'tour_db' }}
+          Host: ${{ secrets.DB_HOST || 'localhost' }}
+          Size: $(du -h backups/database/tour_db_${{ env.BACKUP_DATE }}.sql.gz | cut -f1)
+          Git Commit: ${{ github.sha }}
+          Workflow Run: ${{ github.run_id }}
+          EOF
+
+      - name: Upload database backup to S3
+        run: |
+          aws s3 cp backups/database/tour_db_${{ env.BACKUP_DATE }}.sql.gz \
+            s3://${{ secrets.S3_BACKUP_BUCKET }}/database/tour_db_${{ env.BACKUP_DATE }}.sql.gz \
+            --storage-class STANDARD_IA \
+            --metadata "backup-date=${{ env.BACKUP_DATE }},type=database,app=tour"
+          
+          aws s3 cp backups/database/backup_info_${{ env.BACKUP_DATE }}.txt \
+            s3://${{ secrets.S3_BACKUP_BUCKET }}/database/backup_info_${{ env.BACKUP_DATE }}.txt \
+            --storage-class STANDARD_IA
+
+      - name: Verify database backup
+        run: |
+          # Download and verify the backup
+          aws s3 cp s3://${{ secrets.S3_BACKUP_BUCKET }}/database/tour_db_${{ env.BACKUP_DATE }}.sql.gz \
+            /tmp/verify_backup.sql.gz
+          
+          # Test decompression
+          gunzip -t /tmp/verify_backup.sql.gz
+          
+          # Check file size
+          BACKUP_SIZE=$(aws s3api head-object \
+            --bucket ${{ secrets.S3_BACKUP_BUCKET }} \
+            --key database/tour_db_${{ env.BACKUP_DATE }}.sql.gz \
+            --query 'ContentLength' --output text)
+          
+          if [ "$BACKUP_SIZE" -lt 1000 ]; then
+            echo "❌ Backup file too small: $BACKUP_SIZE bytes"
+            exit 1
+          fi
+          
+          echo "✅ Database backup verified: $BACKUP_SIZE bytes"
+
+  # Storage Backup (MinIO to S3)
+  storage-backup:
+    name: MinIO Storage Backup
+    runs-on: ubuntu-latest
+    if: github.event.inputs.backup_type == 'all' || github.event.inputs.backup_type == 'storage' || github.event_name == 'schedule'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup AWS CLI
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION || 'us-east-1' }}
+
+      - name: Install MinIO Client
+        run: |
+          wget https://dl.min.io/client/mc/release/linux-amd64/mc
+          chmod +x mc
+          sudo mv mc /usr/local/bin/
+
+      - name: Configure MinIO Client
+        run: |
+          # Configure MinIO alias
+          mc alias set minio \
+            http://${{ secrets.MINIO_ENDPOINT || 'localhost:9000' }} \
+            ${{ secrets.MINIO_ROOT_USER || 'minioadmin' }} \
+            ${{ secrets.MINIO_ROOT_PASSWORD }}
+          
+          # Configure S3 alias
+          mc alias set s3 \
+            https://s3.${{ secrets.AWS_REGION || 'us-east-1' }}.amazonaws.com \
+            ${{ secrets.AWS_ACCESS_KEY_ID }} \
+            ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Create storage backup
+        run: |
+          # Create backup directory
+          mkdir -p backups/storage
+          
+          # Mirror MinIO bucket to S3
+          mc mirror \
+            --overwrite \
+            --remove \
+            --watch \
+            minio/${{ secrets.MINIO_BUCKET || 'tour-media' }} \
+            s3/${{ secrets.S3_BACKUP_BUCKET }}/storage/${{ env.BACKUP_DATE }}/
+          
+          # Create backup manifest
+          mc ls --recursive minio/${{ secrets.MINIO_BUCKET || 'tour-media' }} > backups/storage/manifest_${{ env.BACKUP_DATE }}.txt
+          
+          # Create backup info
+          cat > backups/storage/backup_info_${{ env.BACKUP_DATE }}.txt << EOF
+          Backup Date: $(date)
+          Source: MinIO (${{ secrets.MINIO_BUCKET || 'tour-media' }})
+          Destination: S3 (${{ secrets.S3_BACKUP_BUCKET }}/storage/${{ env.BACKUP_DATE }}/)
+          Files Count: $(wc -l < backups/storage/manifest_${{ env.BACKUP_DATE }}.txt)
+          Git Commit: ${{ github.sha }}
+          Workflow Run: ${{ github.run_id }}
+          EOF
+
+      - name: Upload backup manifest to S3
+        run: |
+          aws s3 cp backups/storage/manifest_${{ env.BACKUP_DATE }}.txt \
+            s3://${{ secrets.S3_BACKUP_BUCKET }}/storage/manifest_${{ env.BACKUP_DATE }}.txt \
+            --storage-class STANDARD_IA
+          
+          aws s3 cp backups/storage/backup_info_${{ env.BACKUP_DATE }}.txt \
+            s3://${{ secrets.S3_BACKUP_BUCKET }}/storage/backup_info_${{ env.BACKUP_DATE }}.txt \
+            --storage-class STANDARD_IA
+
+      - name: Verify storage backup
+        run: |
+          # Count files in source and destination
+          SOURCE_COUNT=$(mc ls --recursive minio/${{ secrets.MINIO_BUCKET || 'tour-media' }} | wc -l)
+          DEST_COUNT=$(aws s3 ls s3://${{ secrets.S3_BACKUP_BUCKET }}/storage/${{ env.BACKUP_DATE }}/ --recursive | wc -l)
+          
+          echo "Source files: $SOURCE_COUNT"
+          echo "Backed up files: $DEST_COUNT"
+          
+          if [ "$SOURCE_COUNT" -ne "$DEST_COUNT" ]; then
+            echo "❌ File count mismatch: $SOURCE_COUNT vs $DEST_COUNT"
+            exit 1
+          fi
+          
+          echo "✅ Storage backup verified: $DEST_COUNT files"
+
+  # Cleanup old backups
+  cleanup-backups:
+    name: Cleanup Old Backups
+    runs-on: ubuntu-latest
+    if: github.event.inputs.backup_type == 'all' || github.event.inputs.backup_type == 'cleanup' || github.event_name == 'schedule'
+    steps:
+      - name: Setup AWS CLI
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION || 'us-east-1' }}
+
+      - name: Cleanup old database backups
+        run: |
+          # Keep daily backups for 30 days, weekly for 12 weeks, monthly for 12 months
+          aws s3 ls s3://${{ secrets.S3_BACKUP_BUCKET }}/database/ --recursive | \
+            grep "tour_db_.*\.sql\.gz$" | \
+            awk '{print $4}' | \
+            sort -r | \
+            tail -n +31 | \
+            xargs -I {} aws s3 rm s3://${{ secrets.S3_BACKUP_BUCKET }}/{}
+          
+          # Clean up old backup info files
+          aws s3 ls s3://${{ secrets.S3_BACKUP_BUCKET }}/database/ --recursive | \
+            grep "backup_info_.*\.txt$" | \
+            awk '{print $4}' | \
+            sort -r | \
+            tail -n +31 | \
+            xargs -I {} aws s3 rm s3://${{ secrets.S3_BACKUP_BUCKET }}/{}
+
+      - name: Cleanup old storage backups
+        run: |
+          # Keep storage backups for 30 days
+          aws s3 ls s3://${{ secrets.S3_BACKUP_BUCKET }}/storage/ | \
+            awk '{print $2}' | \
+            grep -E '^[0-9]+-[0-9]{8}-[0-9]{6}/$' | \
+            sort -r | \
+            tail -n +31 | \
+            xargs -I {} aws s3 rm s3://${{ secrets.S3_BACKUP_BUCKET }}/storage/{} --recursive
+          
+          # Clean up old manifests
+          aws s3 ls s3://${{ secrets.S3_BACKUP_BUCKET }}/storage/ --recursive | \
+            grep "manifest_.*\.txt$" | \
+            awk '{print $4}' | \
+            sort -r | \
+            tail -n +31 | \
+            xargs -I {} aws s3 rm s3://${{ secrets.S3_BACKUP_BUCKET }}/{}
+
+      - name: Generate cleanup report
+        run: |
+          echo "## Cleanup Report" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Old database backups cleaned up (kept 30 days)" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Old storage backups cleaned up (kept 30 days)" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Old manifest files cleaned up" >> $GITHUB_STEP_SUMMARY
+
+  # Backup summary
+  backup-summary:
+    name: Backup Summary
+    runs-on: ubuntu-latest
+    needs: [database-backup, storage-backup, cleanup-backups]
+    if: always()
+    steps:
+      - name: Setup AWS CLI
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION || 'us-east-1' }}
+
+      - name: Generate backup summary
+        run: |
+          echo "## Backup Summary - ${{ env.BACKUP_DATE }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Database Backup" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ needs.database-backup.result }}" == "success" ]; then
+            echo "✅ Database backup completed successfully" >> $GITHUB_STEP_SUMMARY
+            echo "- File: \`tour_db_${{ env.BACKUP_DATE }}.sql.gz\`" >> $GITHUB_STEP_SUMMARY
+            echo "- Location: \`s3://${{ secrets.S3_BACKUP_BUCKET }}/database/\`" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Database backup failed" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Storage Backup" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ needs.storage-backup.result }}" == "success" ]; then
+            echo "✅ Storage backup completed successfully" >> $GITHUB_STEP_SUMMARY
+            echo "- Source: MinIO (\`${{ secrets.MINIO_BUCKET || 'tour-media' }}\`)" >> $GITHUB_STEP_SUMMARY
+            echo "- Destination: \`s3://${{ secrets.S3_BACKUP_BUCKET }}/storage/${{ env.BACKUP_DATE }}/\`" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Storage backup failed" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Cleanup" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ needs.cleanup-backups.result }}" == "success" ]; then
+            echo "✅ Old backups cleaned up successfully" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Cleanup failed" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Backup Details:**" >> $GITHUB_STEP_SUMMARY
+          echo "- Date: $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "- Git Commit: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Workflow Run: ${{ github.run_id }}" >> $GITHUB_STEP_SUMMARY
+          echo "- S3 Bucket: \`${{ secrets.S3_BACKUP_BUCKET }}\`" >> $GITHUB_STEP_SUMMARY
+
+      - name: Send notification (optional)
+        if: failure()
+        run: |
+          echo "Backup failed for commit ${{ github.sha }}"
+          # Add notification logic here (Slack, email, etc.)
+          # Example: curl -X POST -H 'Content-type: application/json' \
+          #   --data '{"text":"Backup failed for tour app"}' \
+          #   ${{ secrets.SLACK_WEBHOOK_URL }}

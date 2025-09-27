@@ -39,3 +39,4 @@ router.get('/', authenticateToken, requireAdmin, async (req: AuthRequest, res, n
 });
 
 export default router;
+

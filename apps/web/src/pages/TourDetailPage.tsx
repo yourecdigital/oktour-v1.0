@@ -26,3 +26,4 @@ const TourDetailPage: React.FC = () => {
 };
 
 export default TourDetailPage;
+

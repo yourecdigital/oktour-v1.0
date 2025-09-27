@@ -37,3 +37,4 @@ export interface AuthUser {
   role: 'user' | 'admin';
   token: string;
 }
+

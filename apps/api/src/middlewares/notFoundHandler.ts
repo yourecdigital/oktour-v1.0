@@ -7,3 +7,4 @@ export const notFoundHandler = (req: Request, res: Response, next: NextFunction)
     method: req.method,
   });
 };
+

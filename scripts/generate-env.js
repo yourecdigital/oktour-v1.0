@@ -80,3 +80,4 @@ COMPOSE_PROJECT_NAME=tour-monorepo
 }
 
 generateEnv().catch(console.error);
+

@@ -417,3 +417,4 @@ const HeroBackgroundManager: React.FC = () => {
 };
 
 export default HeroBackgroundManager;
+

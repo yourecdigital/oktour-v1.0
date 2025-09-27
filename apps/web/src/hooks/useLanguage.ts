@@ -164,3 +164,4 @@ export const useLanguage = () => {
     supportedLanguages: SUPPORTED_LOCALES,
   };
 };
+

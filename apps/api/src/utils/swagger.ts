@@ -38,3 +38,4 @@ export const setupSwagger = (app: Application) => {
     customSiteTitle: 'Tour API Documentation',
   }));
 };
+

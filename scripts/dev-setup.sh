@@ -38,3 +38,4 @@ echo "1. Review the .env file"
 echo "2. Start services: docker-compose -f docker-compose.dev.yml up -d"
 echo "3. View logs: docker-compose -f docker-compose.dev.yml logs -f"
 echo "4. Stop services: docker-compose -f docker-compose.dev.yml down"
+
