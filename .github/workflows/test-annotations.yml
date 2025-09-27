@@ -1,0 +1,135 @@
+name: Test Annotations
+
+on:
+  workflow_run:
+    workflows: ["CI - Continuous Integration"]
+    types: [completed]
+
+jobs:
+  annotate-test-results:
+    name: Annotate Test Results
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download test results
+        uses: actions/download-artifact@v3
+        with:
+          name: test-results
+          path: ./test-results
+
+      - name: Annotate Unit Test Failures
+        if: failure()
+        run: |
+          if [ -f "./test-results/unit-test-results.json" ]; then
+            echo "## Unit Test Failures" >> $GITHUB_STEP_SUMMARY
+            jq -r '.failures[] | "- ❌ \(.title): \(.error)"' ./test-results/unit-test-results.json >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Annotate Integration Test Failures
+        if: failure()
+        run: |
+          if [ -f "./test-results/integration-test-results.json" ]; then
+            echo "## Integration Test Failures" >> $GITHUB_STEP_SUMMARY
+            jq -r '.failures[] | "- ❌ \(.title): \(.error)"' ./test-results/integration-test-results.json >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Annotate E2E Test Failures
+        if: failure()
+        run: |
+          if [ -f "./test-results/e2e-test-results.json" ]; then
+            echo "## E2E Test Failures" >> $GITHUB_STEP_SUMMARY
+            jq -r '.failures[] | "- ❌ \(.title): \(.error)"' ./test-results/e2e-test-results.json >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Annotate Coverage Issues
+        if: failure()
+        run: |
+          if [ -f "./test-results/coverage/coverage-summary.json" ]; then
+            echo "## Coverage Issues" >> $GITHUB_STEP_SUMMARY
+            echo "| File | Lines | Functions | Branches | Statements |" >> $GITHUB_STEP_SUMMARY
+            echo "|------|-------|-----------|----------|------------|" >> $GITHUB_STEP_SUMMARY
+            
+            jq -r '.total | "| Total | \(.lines.pct)% | \(.functions.pct)% | \(.branches.pct)% | \(.statements.pct)% |"' ./test-results/coverage/coverage-summary.json >> $GITHUB_STEP_SUMMARY
+            
+            # Find files with low coverage
+            jq -r 'to_entries[] | select(.value.lines.pct < 80) | "| \(.key) | \(.value.lines.pct)% | \(.value.functions.pct)% | \(.value.branches.pct)% | \(.value.statements.pct)% |"' ./test-results/coverage/coverage-summary.json >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Create GitHub Issues for Test Failures
+        if: failure()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            
+            // Read test results
+            const testResults = [];
+            
+            try {
+              if (fs.existsSync('./test-results/unit-test-results.json')) {
+                const unitResults = JSON.parse(fs.readFileSync('./test-results/unit-test-results.json', 'utf8'));
+                testResults.push(...unitResults.failures.map(f => ({ ...f, type: 'unit' })));
+              }
+            } catch (e) {
+              console.log('No unit test results found');
+            }
+            
+            try {
+              if (fs.existsSync('./test-results/integration-test-results.json')) {
+                const integrationResults = JSON.parse(fs.readFileSync('./test-results/integration-test-results.json', 'utf8'));
+                testResults.push(...integrationResults.failures.map(f => ({ ...f, type: 'integration' })));
+              }
+            } catch (e) {
+              console.log('No integration test results found');
+            }
+            
+            try {
+              if (fs.existsSync('./test-results/e2e-test-results.json')) {
+                const e2eResults = JSON.parse(fs.readFileSync('./test-results/e2e-test-results.json', 'utf8'));
+                testResults.push(...e2eResults.failures.map(f => ({ ...f, type: 'e2e' })));
+              }
+            } catch (e) {
+              console.log('No e2e test results found');
+            }
+            
+            // Create issues for test failures
+            for (const failure of testResults) {
+              const title = `[${failure.type.toUpperCase()}] ${failure.title}`;
+              const body = `
+                ## Test Failure Details
+                
+                **Test Type:** ${failure.type}
+                **Test Title:** ${failure.title}
+                **Error:** ${failure.error}
+                **File:** ${failure.file || 'N/A'}
+                **Line:** ${failure.line || 'N/A'}
+                
+                ## Steps to Reproduce
+                1. Run the failing test
+                2. Check the error message
+                3. Fix the issue
+                
+                ## Expected Behavior
+                The test should pass without errors.
+                
+                ## Additional Context
+                This issue was automatically created from test failure annotations.
+              `;
+              
+              try {
+                await github.rest.issues.create({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  title: title,
+                  body: body,
+                  labels: ['bug', 'test-failure', failure.type]
+                });
+              } catch (e) {
+                console.log(`Failed to create issue for ${failure.title}:`, e.message);
+              }
+            }

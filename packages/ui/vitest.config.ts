@@ -1,5 +1,5 @@
 import { defineConfig } from 'vitest/config';
-import react from '@vitejs/plugin-react-swc';
+import react from '@vitejs/plugin-react';
 import path from 'path';
 
 export default defineConfig({
@@ -17,8 +17,6 @@ export default defineConfig({
         '**/*.d.ts',
         '**/*.config.*',
         'dist/',
-        'src/main.tsx',
-        'src/App.tsx',
       ],
       thresholds: {
         global: {
@@ -33,8 +31,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
-      '@tour/shared': path.resolve(__dirname, '../packages/shared/src'),
-      '@tour/ui': path.resolve(__dirname, '../packages/ui/src'),
     },
   },
 });
+

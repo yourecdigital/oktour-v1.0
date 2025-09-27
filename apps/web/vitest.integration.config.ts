@@ -7,7 +7,8 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
-    setupFiles: ['./src/test/setup.ts'],
+    setupFiles: ['./src/test/integration-setup.ts'],
+    include: ['src/**/*.integration.test.{ts,tsx}'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
@@ -17,8 +18,6 @@ export default defineConfig({
         '**/*.d.ts',
         '**/*.config.*',
         'dist/',
-        'src/main.tsx',
-        'src/App.tsx',
       ],
       thresholds: {
         global: {
@@ -38,3 +37,4 @@ export default defineConfig({
     },
   },
 });
+

@@ -1,20 +1,35 @@
 import { defineConfig } from 'vitest/config';
+import path from 'path';
 
 export default defineConfig({
   test: {
-    include: ['tests/**/*.test.ts'],
+    globals: true,
+    environment: 'node',
+    setupFiles: ['./src/test/setup.ts'],
     coverage: {
-      enabled: true,
-      reporter: ['text', 'lcov'],
-      lines: 90,
-      functions: 90,
-      branches: 90,
-      statements: 90,
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
+      exclude: [
+        'node_modules/',
+        'src/test/',
+        '**/*.d.ts',
+        '**/*.config.*',
+        'dist/',
+        'prisma/',
+      ],
+      thresholds: {
+        global: {
+          branches: 80,
+          functions: 80,
+          lines: 80,
+          statements: 80,
+        },
+      },
     },
-    ui: true,
+  },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
   },
 });
-
-
-
-

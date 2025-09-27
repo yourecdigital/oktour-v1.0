@@ -13,6 +13,13 @@
     "build": "turbo run build",
     "lint": "turbo run lint",
     "test": "turbo run test",
+    "test:unit": "turbo run test:unit",
+    "test:integration": "turbo run test:integration",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
+    "test:coverage": "turbo run test:coverage",
+    "test:watch": "turbo run test:watch",
     "clean": "turbo run clean",
     "type-check": "turbo run type-check",
     "docker:dev": "docker-compose -f docker-compose.dev.yml up -d",
@@ -31,7 +38,9 @@
     "turbo": "^1.13.0",
     "@types/node": "^20.10.0",
     "typescript": "^5.3.0",
-    "@tour/config": "workspace:*"
+    "@tour/config": "workspace:*",
+    "@playwright/test": "^1.40.0",
+    "playwright": "^1.40.0"
   },
   "engines": {
     "node": ">=18.17.0",
