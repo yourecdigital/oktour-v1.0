@@ -1,0 +1,136 @@
+groups:
+  - name: performance-alerts
+    rules:
+      # P99 Response Time > 500ms
+      - alert: HighP99ResponseTime
+        expr: histogram_quantile(0.99, rate(http_request_duration_seconds_bucket[5m])) > 0.5
+        for: 2m
+        labels:
+          severity: warning
+          alert_type: performance
+        annotations:
+          summary: "High P99 response time detected"
+          description: "P99 response time is {{ $value | humanize }}s for {{ $labels.job }} (threshold: 500ms)"
+          runbook_url: "https://docs.tour.com/runbooks/high-response-time"
+
+      # P95 Response Time > 200ms
+      - alert: HighP95ResponseTime
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 0.2
+        for: 2m
+        labels:
+          severity: warning
+          alert_type: performance
+        annotations:
+          summary: "High P95 response time detected"
+          description: "P95 response time is {{ $value | humanize }}s for {{ $labels.job }} (threshold: 200ms)"
+
+      # Error Rate > 1%
+      - alert: HighErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m]) > 0.01
+        for: 2m
+        labels:
+          severity: critical
+          alert_type: reliability
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate is {{ $value | humanizePercentage }} for {{ $labels.job }} (threshold: 1%)"
+          runbook_url: "https://docs.tour.com/runbooks/high-error-rate"
+
+      # 4xx Error Rate > 5%
+      - alert: High4xxErrorRate
+        expr: rate(http_requests_total{status=~"4.."}[5m]) / rate(http_requests_total[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+          alert_type: reliability
+        annotations:
+          summary: "High 4xx error rate detected"
+          description: "4xx error rate is {{ $value | humanizePercentage }} for {{ $labels.job }} (threshold: 5%)"
+
+      # Database Query Duration > 1s
+      - alert: SlowDatabaseQueries
+        expr: histogram_quantile(0.95, rate(prisma_query_duration_seconds_bucket[5m])) > 1
+        for: 2m
+        labels:
+          severity: warning
+          alert_type: performance
+        annotations:
+          summary: "Slow database queries detected"
+          description: "P95 database query duration is {{ $value | humanize }}s (threshold: 1s)"
+
+      # API Response Time > 2s
+      - alert: SlowAPIResponse
+        expr: histogram_quantile(0.95, rate(api_request_duration_seconds_bucket[5m])) > 2
+        for: 2m
+        labels:
+          severity: warning
+          alert_type: performance
+        annotations:
+          summary: "Slow API response detected"
+          description: "P95 API response time is {{ $value | humanize }}s for {{ $labels.endpoint }} (threshold: 2s)"
+
+      # Frontend Load Time > 3s
+      - alert: SlowFrontendLoad
+        expr: histogram_quantile(0.95, rate(react_page_load_duration_seconds_bucket[5m])) > 3
+        for: 2m
+        labels:
+          severity: warning
+          alert_type: performance
+        annotations:
+          summary: "Slow frontend load time detected"
+          description: "P95 page load time is {{ $value | humanize }}s (threshold: 3s)"
+
+      # Nginx Upstream Response Time > 1s
+      - alert: SlowNginxUpstream
+        expr: histogram_quantile(0.95, rate(nginx_upstream_response_time_seconds_bucket[5m])) > 1
+        for: 2m
+        labels:
+          severity: warning
+          alert_type: performance
+        annotations:
+          summary: "Slow Nginx upstream response"
+          description: "P95 Nginx upstream response time is {{ $value | humanize }}s (threshold: 1s)"
+
+      # High Request Rate > 1000 req/s
+      - alert: HighRequestRate
+        expr: rate(http_requests_total[5m]) > 1000
+        for: 2m
+        labels:
+          severity: warning
+          alert_type: capacity
+        annotations:
+          summary: "High request rate detected"
+          description: "Request rate is {{ $value | humanize }} req/s for {{ $labels.job }} (threshold: 1000 req/s)"
+
+      # Memory Usage > 90%
+      - alert: HighMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 90
+        for: 5m
+        labels:
+          severity: critical
+          alert_type: capacity
+        annotations:
+          summary: "High memory usage detected"
+          description: "Memory usage is {{ $value | humanize }}% on {{ $labels.instance }} (threshold: 90%)"
+
+      # CPU Usage > 80%
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 5m
+        labels:
+          severity: warning
+          alert_type: capacity
+        annotations:
+          summary: "High CPU usage detected"
+          description: "CPU usage is {{ $value | humanize }}% on {{ $labels.instance }} (threshold: 80%)"
+
+      # Disk Usage > 85%
+      - alert: HighDiskUsage
+        expr: (1 - (node_filesystem_avail_bytes / node_filesystem_size_bytes)) * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+          alert_type: capacity
+        annotations:
+          summary: "High disk usage detected"
+          description: "Disk usage is {{ $value | humanize }}% on {{ $labels.instance }} (threshold: 85%)"

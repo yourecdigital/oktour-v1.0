@@ -7,6 +7,7 @@ import { env } from './env';
 import { errorHandler } from './middlewares/errorHandler';
 import { notFoundHandler } from './middlewares/notFoundHandler';
 import { setupSwagger } from './utils/swagger';
+import { initSentry, Sentry } from './lib/sentry';
 import { redisClient } from './utils/redis';
 
 // Import routes
@@ -17,8 +18,17 @@ import mediaRoutes from './routes/media';
 import heroRoutes from './routes/hero';
 import healthRoutes from './routes/health';
 
+// Initialize Sentry before creating the app
+initSentry();
+
 const app = express();
 const prisma = new PrismaClient();
+
+// Sentry request handler must be the first middleware
+app.use(Sentry.requestHandler());
+
+// Sentry tracing handler
+app.use(Sentry.tracingHandler());
 
 // Security middleware
 app.use(helmet({
@@ -78,6 +88,9 @@ app.use('/api/health', healthRoutes);
 
 // Swagger documentation
 setupSwagger(app);
+
+// Sentry error handler must be before other error handlers
+app.use(Sentry.errorHandler());
 
 // Error handling
 app.use(notFoundHandler);

@@ -1,0 +1,116 @@
+global:
+  smtp_smarthost: 'localhost:587'
+  smtp_from: 'alerts@tour.com'
+  smtp_auth_username: 'alerts@tour.com'
+  smtp_auth_password: 'password'
+
+route:
+  group_by: ['alertname', 'severity']
+  group_wait: 10s
+  group_interval: 10s
+  repeat_interval: 1h
+  receiver: 'default'
+  routes:
+    # Critical alerts - immediate notification
+    - match:
+        severity: critical
+      receiver: 'critical-alerts'
+      group_wait: 5s
+      repeat_interval: 30m
+      
+    # Performance alerts - warning level
+    - match:
+        alert_type: performance
+      receiver: 'performance-alerts'
+      group_wait: 30s
+      repeat_interval: 2h
+      
+    # Capacity alerts - warning level
+    - match:
+        alert_type: capacity
+      receiver: 'capacity-alerts'
+      group_wait: 1m
+      repeat_interval: 4h
+
+receivers:
+  - name: 'default'
+    webhook_configs:
+      - url: 'http://localhost:5001/webhook'
+        send_resolved: true
+
+  - name: 'critical-alerts'
+    email_configs:
+      - to: 'admin@tour.com'
+        subject: '🚨 CRITICAL: {{ .GroupLabels.alertname }}'
+        body: |
+          {{ range .Alerts }}
+          **Alert:** {{ .Annotations.summary }}
+          **Description:** {{ .Annotations.description }}
+          **Severity:** {{ .Labels.severity }}
+          **Instance:** {{ .Labels.instance }}
+          **Job:** {{ .Labels.job }}
+          **Time:** {{ .StartsAt.Format "2006-01-02 15:04:05" }}
+          {{ if .Annotations.runbook_url }}
+          **Runbook:** {{ .Annotations.runbook_url }}
+          {{ end }}
+          {{ end }}
+    webhook_configs:
+      - url: 'http://localhost:5001/webhook'
+        send_resolved: true
+    slack_configs:
+      - api_url: 'https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK'
+        channel: '#alerts'
+        title: 'Critical Alert'
+        text: '{{ range .Alerts }}{{ .Annotations.summary }}{{ end }}'
+
+  - name: 'performance-alerts'
+    email_configs:
+      - to: 'dev@tour.com'
+        subject: '⚠️ PERFORMANCE: {{ .GroupLabels.alertname }}'
+        body: |
+          {{ range .Alerts }}
+          **Alert:** {{ .Annotations.summary }}
+          **Description:** {{ .Annotations.description }}
+          **Severity:** {{ .Labels.severity }}
+          **Instance:** {{ .Labels.instance }}
+          **Job:** {{ .Labels.job }}
+          **Time:** {{ .StartsAt.Format "2006-01-02 15:04:05" }}
+          {{ if .Annotations.runbook_url }}
+          **Runbook:** {{ .Annotations.runbook_url }}
+          {{ end }}
+          {{ end }}
+    webhook_configs:
+      - url: 'http://localhost:5001/webhook'
+        send_resolved: true
+
+  - name: 'capacity-alerts'
+    email_configs:
+      - to: 'ops@tour.com'
+        subject: '📊 CAPACITY: {{ .GroupLabels.alertname }}'
+        body: |
+          {{ range .Alerts }}
+          **Alert:** {{ .Annotations.summary }}
+          **Description:** {{ .Annotations.description }}
+          **Severity:** {{ .Labels.severity }}
+          **Instance:** {{ .Labels.instance }}
+          **Job:** {{ .Labels.job }}
+          **Time:** {{ .StartsAt.Format "2006-01-02 15:04:05" }}
+          {{ end }}
+    webhook_configs:
+      - url: 'http://localhost:5001/webhook'
+        send_resolved: true
+
+inhibit_rules:
+  # Inhibit warning alerts when critical alerts are firing
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['alertname', 'instance']
+    
+  # Inhibit capacity alerts when performance alerts are firing
+  - source_match:
+      alert_type: 'performance'
+    target_match:
+      alert_type: 'capacity'
+    equal: ['instance']

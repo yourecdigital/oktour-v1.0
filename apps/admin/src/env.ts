@@ -11,6 +11,11 @@ const envSchema = z.object({
   VITE_MINIO_SECRET_KEY: z.string().default('minioadmin123'),
   VITE_MINIO_BUCKET: z.string().default('tour-media'),
   VITE_MINIO_USE_SSL: z.string().transform(val => val === 'true').default('false'),
+  VITE_SENTRY_DSN: z.string().url().optional(),
+  VITE_SENTRY_ENVIRONMENT: z.string().default('development'),
+  VITE_SENTRY_RELEASE: z.string().optional(),
+  VITE_SENTRY_TRACES_SAMPLE_RATE: z.string().transform(Number).default(0.1),
+  VITE_SENTRY_REPLAYS_SAMPLE_RATE: z.string().transform(Number).default(0.1),
 });
 
 export const env = envSchema.parse(import.meta.env);

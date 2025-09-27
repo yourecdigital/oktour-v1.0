@@ -33,7 +33,10 @@
     "react-beautiful-dnd": "^13.1.1",
     "react-hot-toast": "^2.4.0",
     "date-fns": "^2.30.0",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "@sentry/react": "^7.100.0",
+    "@sentry/tracing": "^7.100.0",
+    "@sentry/replay": "^7.100.0"
   },
   "devDependencies": {
     "@types/react": "^19.0.0",

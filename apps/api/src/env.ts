@@ -32,6 +32,13 @@ const envSchema = z.object({
   // File Upload
   MAX_FILE_SIZE: z.string().transform(Number).default('10485760'), // 10MB
   UPLOAD_DIR: z.string().default('./uploads'),
+  
+  // Sentry
+  SENTRY_DSN: z.string().url().optional(),
+  SENTRY_ENVIRONMENT: z.string().default('development'),
+  SENTRY_RELEASE: z.string().optional(),
+  SENTRY_TRACES_SAMPLE_RATE: z.string().transform(Number).default(0.1),
+  SENTRY_PROFILES_SAMPLE_RATE: z.string().transform(Number).default(0.1),
 });
 
 export const env = envSchema.parse(process.env);

@@ -7,7 +7,7 @@ export const initSentry = () => {
     Sentry.init({
       dsn: env.VITE_SENTRY_DSN,
       environment: env.VITE_SENTRY_ENVIRONMENT,
-      release: env.VITE_APP_VERSION,
+      release: env.VITE_SENTRY_RELEASE,
       integrations: [
         new Sentry.BrowserTracing({
           // Set sampling rate for performance monitoring
@@ -39,4 +39,3 @@ export const initSentry = () => {
 };
 
 export { Sentry };
-
