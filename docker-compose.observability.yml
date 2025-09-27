@@ -164,6 +164,42 @@ services:
       - tour-network
       - observability-network
 
+  # Telegram Bot - DevOps bot
+  bot:
+    build:
+      context: .
+      dockerfile: packages/bot/Dockerfile
+      target: runner
+    container_name: tour-bot
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3002
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+      TELEGRAM_CHAT_ID: ${TELEGRAM_CHAT_ID}
+      GITHUB_TOKEN: ${GITHUB_TOKEN}
+      GITHUB_REPO: ${GITHUB_REPO:-oktour-v1.0}
+      GITHUB_OWNER: ${GITHUB_OWNER:-yourecdigital}
+      GRAFANA_URL: http://grafana:3000
+      GRAFANA_USERNAME: admin
+      GRAFANA_PASSWORD: admin123
+      PROMETHEUS_URL: http://prometheus:9090
+      WEBHOOK_SECRET: ${WEBHOOK_SECRET}
+      CORS_ORIGIN: "*"
+    volumes:
+      - bot_logs:/app/logs
+    ports:
+      - "3002:3002"
+    depends_on:
+      - grafana
+      - prometheus
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3002/health"]
+      timeout: 3s
+      retries: 5
+    networks:
+      - observability-network
+
 volumes:
   prometheus_data:
     driver: local
@@ -172,6 +208,8 @@ volumes:
   loki_data:
     driver: local
   alertmanager_data:
+    driver: local
+  bot_logs:
     driver: local
 
 networks:
