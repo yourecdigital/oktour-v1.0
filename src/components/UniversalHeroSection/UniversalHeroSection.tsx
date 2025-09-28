@@ -204,7 +204,7 @@ const UniversalHeroSection: React.FC<UniversalHeroSectionProps> = ({
               {/* Fallback image shown while video is loading */}
               {!isVideoLoaded && background.fallback_image_url && (
                 <img 
-                  src={`'http://localhost:5000'${background.fallback_image_url}`}
+                  src={`http://localhost:5000${background.fallback_image_url}`}
                   alt={`${title} background`}
                   className="hero-background-image hero-fallback-image"
                   style={{ 
@@ -222,14 +222,14 @@ const UniversalHeroSection: React.FC<UniversalHeroSectionProps> = ({
               )}
               <video 
                 ref={videoRef}
-                src={`'http://localhost:5000'${background.background_image_url}`}
+                src={`http://localhost:5000${background.background_image_url}`}
                 className="hero-background-video"
                 muted
                 autoPlay
                 loop
                 playsInline
                 preload="auto"
-                poster={background.fallback_image_url ? `'http://localhost:5000'${background.fallback_image_url}` : undefined}
+                poster={background.fallback_image_url ? `http://localhost:5000${background.fallback_image_url}` : undefined}
                 controls={false}
                 disablePictureInPicture
                 disableRemotePlayback

@@ -666,13 +666,13 @@ const HeroBackgroundManager: React.FC = () => {
                 {background?.background_image_url ? (
                   background.background_type === 'video' ? (
                     <video 
-                      src={`'http://localhost:5000'${background.background_image_url}`}
+                      src={`http://localhost:5000${background.background_image_url}`}
                       className="preview-video"
                       muted
                     />
                   ) : (
                     <img 
-                      src={`'http://localhost:5000'${background.background_image_url}`}
+                      src={`http://localhost:5000${background.background_image_url}`}
                       alt={`${page.label} background`}
                       className="preview-image"
                     />
@@ -795,13 +795,13 @@ const HeroBackgroundManager: React.FC = () => {
                 editingBackground.background_type === 'video' ? (
               <PreviewVideo
                 ref={handleVideoLoad}
-                src={`'http://localhost:5000'${editingBackground.background_image_url}`}
+                src={`http://localhost:5000${editingBackground.background_image_url}`}
                 controls
                 crossOrigin="anonymous"
               />
                 ) : (
                   <PreviewImage 
-                    src={`'http://localhost:5000'${editingBackground.background_image_url}`} 
+                    src={`http://localhost:5000${editingBackground.background_image_url}`} 
                     alt="Current background" 
                   />
                 )

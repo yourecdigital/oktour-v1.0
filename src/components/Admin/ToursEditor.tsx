@@ -530,7 +530,7 @@ const ToursEditor: React.FC = () => {
               <CardInfo>
                 <strong>Изображение:</strong>
                 <img 
-                  src={`'http://localhost:5000'${tour.image_url}`} 
+                  src={`http://localhost:5000${tour.image_url}`} 
                   alt={tour.name}
                   style={{ 
                     width: '100%', 
@@ -665,7 +665,7 @@ const ToursEditor: React.FC = () => {
                 {formData.image_url && (
                   <ImagePreview>
                     <img 
-                      src={formData.image_url.startsWith('http') ? formData.image_url : `'http://localhost:5000'${formData.image_url}`} 
+                      src={formData.image_url.startsWith('http') ? formData.image_url : `http://localhost:5000${formData.image_url}`} 
                       alt="Current" 
                     />
                   </ImagePreview>

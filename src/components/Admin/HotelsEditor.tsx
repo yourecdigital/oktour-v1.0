@@ -531,7 +531,7 @@ const HotelsEditor: React.FC = () => {
               <CardInfo>
                 <strong>Изображение:</strong>
                 <img 
-                  src={`'http://localhost:5000'${hotel.image_url}`} 
+                  src={`http://localhost:5000${hotel.image_url}`} 
                   alt={hotel.name}
                   style={{ 
                     width: '100%', 

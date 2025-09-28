@@ -663,7 +663,7 @@ const ForeignEditor: React.FC = () => {
               <CardInfo>
                 <strong>Изображение:</strong>
                 <img 
-                  src={`'http://localhost:5000'${tour.image_url}`} 
+                  src={`http://localhost:5000${tour.image_url}`} 
                   alt={tour.name}
                   style={{ 
                     width: '100%', 

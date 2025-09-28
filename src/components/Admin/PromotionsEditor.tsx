@@ -493,7 +493,7 @@ const PromotionsEditor: React.FC = () => {
               <CardInfo>
                 <strong>Изображение:</strong>
                 <img 
-                  src={`'http://localhost:5000'${promotion.image_url}`} 
+                  src={`http://localhost:5000${promotion.image_url}`} 
                   alt={promotion.title}
                   style={{ 
                     width: '100%', 
@@ -615,7 +615,7 @@ const PromotionsEditor: React.FC = () => {
                     <strong style={{ color: '#0369a1' }}>✅ Изображение загружено:</strong>
                     <br />
                     <img 
-                      src={`'http://localhost:5000'${formData.image_url}`} 
+                      src={`http://localhost:5000${formData.image_url}`} 
                       alt="Preview" 
                       style={{ 
                         width: '100%', 

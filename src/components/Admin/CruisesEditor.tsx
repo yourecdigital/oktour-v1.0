@@ -466,7 +466,7 @@ const CruisesEditor: React.FC = () => {
               <CardInfo>
                 <strong>Изображение:</strong>
                 <img 
-                  src={`'http://localhost:5000'${cruise.image_url}`} 
+                  src={`http://localhost:5000${cruise.image_url}`} 
                   alt={cruise.name}
                   style={{ 
                     width: '100%', 
