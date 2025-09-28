@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import API_CONFIG from '../config/api';
 
 interface User {
   id: number;
@@ -48,7 +49,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const fetchUserProfile = useCallback(async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/profile');
+      const response = await axios.get(API_CONFIG.ENDPOINTS.PROFILE);
       const userData = response.data;
       
       // Убеждаемся, что bonusPoints не undefined
@@ -78,7 +79,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await axios.post('http://localhost:5000/api/login', {
+      const response = await axios.post(API_CONFIG.ENDPOINTS.LOGIN, {
         email,
         password
       });
@@ -106,7 +107,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const register = async (email: string, password: string, name: string, phone?: string) => {
     try {
-      const response = await axios.post('http://localhost:5000/api/register', {
+      const response = await axios.post(API_CONFIG.ENDPOINTS.REGISTER, {
         email,
         password,
         name,
