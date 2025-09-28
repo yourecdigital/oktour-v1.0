@@ -346,7 +346,7 @@ const ServicesEditor: React.FC = () => {
   const handleDelete = async (id: number) => {
     if (window.confirm('Вы уверены, что хотите удалить эту услугу?')) {
       try {
-        await axios.delete(`'http://localhost:5000/api/services/${id}`, {
+        await axios.delete(`http://localhost:5000/api/services/${id}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
         }
@@ -406,7 +406,7 @@ const ServicesEditor: React.FC = () => {
       };
 
       if (editingService) {
-        await axios.put(`'http://localhost:5000/api/services/${editingService.id}`, serviceData, {
+        await axios.put(`http://localhost:5000/api/services/${editingService.id}`, serviceData, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
           }

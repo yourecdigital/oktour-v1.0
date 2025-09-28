@@ -609,7 +609,7 @@ const HeroBackgroundManager: React.FC = () => {
     }
 
     try {
-      await axios.delete(`'http://localhost:5000/api/hero-backgrounds/${encodeURIComponent(pageName)}`, {
+      await axios.delete(`http://localhost:5000/api/hero-backgrounds/${encodeURIComponent(pageName)}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
         }

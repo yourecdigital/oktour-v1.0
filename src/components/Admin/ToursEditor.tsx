@@ -412,7 +412,7 @@ const ToursEditor: React.FC = () => {
   const handleDelete = async (id: number) => {
     if (window.confirm('Вы уверены, что хотите удалить этот тур?')) {
       try {
-        await axios.delete(`'http://localhost:5000/api/tours/${id}`, {
+        await axios.delete(`http://localhost:5000/api/tours/${id}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
         }
@@ -472,7 +472,7 @@ const ToursEditor: React.FC = () => {
       };
 
       if (editingTour) {
-        await axios.put(`'http://localhost:5000/api/tours/${editingTour.id}`, tourData, {
+        await axios.put(`http://localhost:5000/api/tours/${editingTour.id}`, tourData, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
           }

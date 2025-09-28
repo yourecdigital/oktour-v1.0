@@ -350,7 +350,7 @@ const CruisesEditor: React.FC = () => {
   const handleDelete = async (id: number) => {
     if (window.confirm('Вы уверены, что хотите удалить этот круиз?')) {
       try {
-        await axios.delete(`'http://localhost:5000/api/cruises/${id}`, {
+        await axios.delete(`http://localhost:5000/api/cruises/${id}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
         }
@@ -410,7 +410,7 @@ const CruisesEditor: React.FC = () => {
       };
 
       if (editingCruise) {
-        await axios.put(`'http://localhost:5000/api/cruises/${editingCruise.id}`, cruiseData, {
+        await axios.put(`http://localhost:5000/api/cruises/${editingCruise.id}`, cruiseData, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
           }

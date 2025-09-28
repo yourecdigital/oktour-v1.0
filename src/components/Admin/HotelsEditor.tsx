@@ -414,7 +414,7 @@ const HotelsEditor: React.FC = () => {
   const handleDelete = async (id: number) => {
     if (window.confirm('Вы уверены, что хотите удалить этот отель?')) {
       try {
-        await axios.delete(`'http://localhost:5000/api/hotels/${id}`, {
+        await axios.delete(`http://localhost:5000/api/hotels/${id}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
         }
@@ -475,7 +475,7 @@ const HotelsEditor: React.FC = () => {
       };
 
       if (editingHotel) {
-        await axios.put(`'http://localhost:5000/api/hotels/${editingHotel.id}`, hotelData, {
+        await axios.put(`http://localhost:5000/api/hotels/${editingHotel.id}`, hotelData, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
           }

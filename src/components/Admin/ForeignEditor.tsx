@@ -502,7 +502,7 @@ const ForeignEditor: React.FC = () => {
   const handleDelete = async (id: number) => {
     if (window.confirm('Вы уверены, что хотите удалить этот тур?')) {
       try {
-        await axios.delete(`'http://localhost:5000/api/foreign-tours/${id}`, {
+        await axios.delete(`http://localhost:5000/api/foreign-tours/${id}`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
           }
@@ -580,7 +580,7 @@ const ForeignEditor: React.FC = () => {
       };
 
       if (editingTour) {
-        await axios.put(`'http://localhost:5000/api/foreign-tours/${editingTour.id}`, tourData, {
+        await axios.put(`http://localhost:5000/api/foreign-tours/${editingTour.id}`, tourData, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
           }

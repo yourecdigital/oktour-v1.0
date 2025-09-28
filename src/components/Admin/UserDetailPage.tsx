@@ -474,7 +474,7 @@ const UserDetailPage: React.FC = () => {
       const endpoint = bonusAction === 'add' ? '/api/admin/bonus/add' : '/api/admin/bonus/deduct';
       const reason = bonusAction === 'add' ? 'Бонус от администратора' : 'Списание администратором';
       
-      await axios.post(`'http://localhost:5000'${endpoint}`, {
+      await axios.post(`http://localhost:5000${endpoint}`, {
         userId: user.id,
         points,
         reason

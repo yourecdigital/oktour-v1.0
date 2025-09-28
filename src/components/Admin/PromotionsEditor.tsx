@@ -411,7 +411,7 @@ const PromotionsEditor: React.FC = () => {
   const handleDelete = async (id: number) => {
     if (window.confirm('Вы уверены, что хотите удалить эту акцию?')) {
       try {
-        await axios.delete(`'http://localhost:5000/api/promotions/${id}`, {
+        await axios.delete(`http://localhost:5000/api/promotions/${id}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
         }
@@ -435,7 +435,7 @@ const PromotionsEditor: React.FC = () => {
       };
 
       if (editingPromotion) {
-        await axios.put(`'http://localhost:5000/api/promotions/${editingPromotion.id}`, promotionData, {
+        await axios.put(`http://localhost:5000/api/promotions/${editingPromotion.id}`, promotionData, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
           }
