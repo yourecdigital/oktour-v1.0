@@ -4,6 +4,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { uploadLocally } from '../../utils/uploadUtils';
 import CategorySelector from './CategorySelector';
+import API_CONFIG from '..\..\config/api';
 
 const Container = styled.div`
   padding: 20px;
@@ -323,7 +324,7 @@ const PromotionsEditor: React.FC = () => {
 
   const fetchPromotions = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/promotions');
+      const response = await axios.get('API_CONFIG.ENDPOINTS.promotions');
       setPromotions(response.data);
       
       // Собираем уникальные категории из существующих акций
@@ -410,7 +411,7 @@ const PromotionsEditor: React.FC = () => {
   const handleDelete = async (id: number) => {
     if (window.confirm('Вы уверены, что хотите удалить эту акцию?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/promotions/${id}`, {
+        await axios.delete(`API_CONFIG.ENDPOINTS.promotions/${id}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
         }
@@ -434,14 +435,14 @@ const PromotionsEditor: React.FC = () => {
       };
 
       if (editingPromotion) {
-        await axios.put(`http://localhost:5000/api/promotions/${editingPromotion.id}`, promotionData, {
+        await axios.put(`API_CONFIG.ENDPOINTS.promotions/${editingPromotion.id}`, promotionData, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
           }
         });
         toast.success('Акция обновлена');
       } else {
-        await axios.post('http://localhost:5000/api/promotions', promotionData, {
+        await axios.post('API_CONFIG.ENDPOINTS.promotions', promotionData, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
           }
@@ -492,7 +493,7 @@ const PromotionsEditor: React.FC = () => {
               <CardInfo>
                 <strong>Изображение:</strong>
                 <img 
-                  src={`http://localhost:5000${promotion.image_url}`} 
+                  src={`API_CONFIG.BASE_URL${promotion.image_url}`} 
                   alt={promotion.title}
                   style={{ 
                     width: '100%', 
@@ -614,7 +615,7 @@ const PromotionsEditor: React.FC = () => {
                     <strong style={{ color: '#0369a1' }}>✅ Изображение загружено:</strong>
                     <br />
                     <img 
-                      src={`http://localhost:5000${formData.image_url}`} 
+                      src={`API_CONFIG.BASE_URL${formData.image_url}`} 
                       alt="Preview" 
                       style={{ 
                         width: '100%', 

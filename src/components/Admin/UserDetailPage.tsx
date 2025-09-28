@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import API_CONFIG from '..\..\config/api';
 
 const Container = styled.div`
   padding: 20px;
@@ -378,7 +379,7 @@ const UserDetailPage: React.FC = () => {
   const fetchUser = async () => {
     try {
       // Получаем всех пользователей и находим нужного по ID
-      const response = await axios.get('http://localhost:5000/api/admin/users', {
+      const response = await axios.get('API_CONFIG.ENDPOINTS.admin/users', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
         }
@@ -390,7 +391,7 @@ const UserDetailPage: React.FC = () => {
         
         // Получаем количество заказов для пользователя
         try {
-          const ordersResponse = await axios.get(`http://localhost:5000/api/admin/user/${foundUser.id}/orders`, {
+          const ordersResponse = await axios.get(`API_CONFIG.ENDPOINTS.admin/user/${foundUser.id}/orders`, {
             headers: {
               'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
             }
@@ -420,7 +421,7 @@ const UserDetailPage: React.FC = () => {
     
     setOrdersLoading(true);
     try {
-      const response = await axios.get(`http://localhost:5000/api/admin/user/${id}/orders`, {
+      const response = await axios.get(`API_CONFIG.ENDPOINTS.admin/user/${id}/orders`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
         }
@@ -473,7 +474,7 @@ const UserDetailPage: React.FC = () => {
       const endpoint = bonusAction === 'add' ? '/api/admin/bonus/add' : '/api/admin/bonus/deduct';
       const reason = bonusAction === 'add' ? 'Бонус от администратора' : 'Списание администратором';
       
-      await axios.post(`http://localhost:5000${endpoint}`, {
+      await axios.post(`API_CONFIG.BASE_URL${endpoint}`, {
         userId: user.id,
         points,
         reason

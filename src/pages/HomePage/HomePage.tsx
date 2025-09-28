@@ -54,9 +54,9 @@ const HomePage: React.FC = () => {
     const fetchData = async () => {
       try {
         const [promotionsRes, hotelsRes, servicesRes] = await Promise.all([
-          axios.get('http://localhost:5000/api/promotions/random?limit=1'),
-          axios.get('http://localhost:5000/api/hotels'),
-          axios.get('http://localhost:5000/api/services')
+          axios.get('API_CONFIG.ENDPOINTS.promotions/random?limit=1'),
+          axios.get('API_CONFIG.ENDPOINTS.hotels'),
+          axios.get('API_CONFIG.ENDPOINTS.services')
         ]);
         
         setPromotions(promotionsRes.data);

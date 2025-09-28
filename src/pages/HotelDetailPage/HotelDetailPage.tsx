@@ -7,6 +7,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import toast from 'react-hot-toast';
 import { getImageUrl } from '../../utils/imageUtils';
 import './HotelDetailPage.css';
+import API_CONFIG from '..\..\config/api';
 
 interface Hotel {
   id: number;
@@ -35,7 +36,7 @@ const HotelDetailPage: React.FC = () => {
   const fetchHotel = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`http://localhost:5000/api/hotels/${id}`);
+      const response = await axios.get(`API_CONFIG.ENDPOINTS.hotels/${id}`);
       setHotel(response.data);
     } catch (error: any) {
       console.error('Error fetching hotel:', error);

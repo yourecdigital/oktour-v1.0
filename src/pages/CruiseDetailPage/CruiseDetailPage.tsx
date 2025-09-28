@@ -7,6 +7,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import toast from 'react-hot-toast';
 import { getImageUrl } from '../../utils/imageUtils';
 import './CruiseDetailPage.css';
+import API_CONFIG from '..\..\config/api';
 
 interface Cruise {
   id: number;
@@ -37,7 +38,7 @@ const CruiseDetailPage: React.FC = () => {
   const fetchCruise = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`http://localhost:5000/api/cruises/${id}`);
+      const response = await axios.get(`API_CONFIG.ENDPOINTS.cruises/${id}`);
       setCruise(response.data);
     } catch (error: any) {
       console.error('Error fetching cruise:', error);

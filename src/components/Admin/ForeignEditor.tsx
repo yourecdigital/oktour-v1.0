@@ -5,6 +5,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import CategorySelector from './CategorySelector';
 import { uploadLocally } from '../../utils/uploadUtils';
+import API_CONFIG from '..\..\config/api';
 
 const Container = styled.div`
   padding: 20px;
@@ -412,7 +413,7 @@ const ForeignEditor: React.FC = () => {
 
   const fetchTours = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/foreign-tours');
+      const response = await axios.get('API_CONFIG.ENDPOINTS.foreign-tours');
       // Parse highlights JSON for each tour
       const toursWithHighlights = response.data.map((tour: any) => ({
         ...tour,
@@ -501,7 +502,7 @@ const ForeignEditor: React.FC = () => {
   const handleDelete = async (id: number) => {
     if (window.confirm('Вы уверены, что хотите удалить этот тур?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/foreign-tours/${id}`, {
+        await axios.delete(`API_CONFIG.ENDPOINTS.foreign-tours/${id}`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
           }
@@ -579,14 +580,14 @@ const ForeignEditor: React.FC = () => {
       };
 
       if (editingTour) {
-        await axios.put(`http://localhost:5000/api/foreign-tours/${editingTour.id}`, tourData, {
+        await axios.put(`API_CONFIG.ENDPOINTS.foreign-tours/${editingTour.id}`, tourData, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
           }
         });
         toast.success('Тур обновлен');
       } else {
-        await axios.post('http://localhost:5000/api/foreign-tours', tourData, {
+        await axios.post('API_CONFIG.ENDPOINTS.foreign-tours', tourData, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
           }
@@ -662,7 +663,7 @@ const ForeignEditor: React.FC = () => {
               <CardInfo>
                 <strong>Изображение:</strong>
                 <img 
-                  src={`http://localhost:5000${tour.image_url}`} 
+                  src={`API_CONFIG.BASE_URL${tour.image_url}`} 
                   alt={tour.name}
                   style={{ 
                     width: '100%', 

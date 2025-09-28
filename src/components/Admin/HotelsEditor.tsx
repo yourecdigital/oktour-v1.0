@@ -5,6 +5,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { uploadLocally } from '../../utils/uploadUtils';
 import CategorySelector from './CategorySelector';
+import API_CONFIG from '..\..\config/api';
 
 const Container = styled.div`
   padding: 20px;
@@ -346,8 +347,8 @@ const HotelsEditor: React.FC = () => {
   const fetchHotels = async () => {
     try {
       const [hotelsResponse, citiesResponse] = await Promise.all([
-        axios.get('http://localhost:5000/api/hotels'),
-        axios.get('http://localhost:5000/api/hotels/cities')
+        axios.get('API_CONFIG.ENDPOINTS.hotels'),
+        axios.get('API_CONFIG.ENDPOINTS.hotels/cities')
       ]);
       
       const allHotelsData = hotelsResponse.data;
@@ -413,7 +414,7 @@ const HotelsEditor: React.FC = () => {
   const handleDelete = async (id: number) => {
     if (window.confirm('Вы уверены, что хотите удалить этот отель?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/hotels/${id}`, {
+        await axios.delete(`API_CONFIG.ENDPOINTS.hotels/${id}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
         }
@@ -474,14 +475,14 @@ const HotelsEditor: React.FC = () => {
       };
 
       if (editingHotel) {
-        await axios.put(`http://localhost:5000/api/hotels/${editingHotel.id}`, hotelData, {
+        await axios.put(`API_CONFIG.ENDPOINTS.hotels/${editingHotel.id}`, hotelData, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
           }
         });
         toast.success('Отель обновлен');
       } else {
-        await axios.post('http://localhost:5000/api/hotels', hotelData, {
+        await axios.post('API_CONFIG.ENDPOINTS.hotels', hotelData, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
           }
@@ -530,7 +531,7 @@ const HotelsEditor: React.FC = () => {
               <CardInfo>
                 <strong>Изображение:</strong>
                 <img 
-                  src={`http://localhost:5000${hotel.image_url}`} 
+                  src={`API_CONFIG.BASE_URL${hotel.image_url}`} 
                   alt={hotel.name}
                   style={{ 
                     width: '100%', 

@@ -3,6 +3,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styled from 'styled-components';
+import API_CONFIG from '..\..\config/api';
 
 const ProfileContainer = styled.div`
   min-height: 80vh;
@@ -169,7 +170,7 @@ const Profile: React.FC = () => {
       if (!token) return;
       
       try {
-        const response = await axios.get('http://localhost:5000/api/orders', {
+        const response = await axios.get('API_CONFIG.ENDPOINTS.orders', {
           headers: {
             'Authorization': `Bearer ${token}`
           }

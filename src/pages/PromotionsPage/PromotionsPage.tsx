@@ -9,6 +9,7 @@ import { getImageUrl } from '../../utils/imageUtils';
 import { useAutoRefresh } from '../../hooks/useAutoRefresh';
 import UniversalHeroSection from '../../components/UniversalHeroSection/UniversalHeroSection';
 import './PromotionsPage.css';
+import API_CONFIG from '..\..\config/api';
 
 interface Promotion {
   id: number;
@@ -31,7 +32,7 @@ const PromotionsPage: React.FC = () => {
 
   const fetchPromotions = useCallback(async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/promotions');
+      const response = await axios.get('API_CONFIG.ENDPOINTS.promotions');
       setPromotions(response.data);
     } catch (error) {
       console.error('Error fetching promotions:', error);

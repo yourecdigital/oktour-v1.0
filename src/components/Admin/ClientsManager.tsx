@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import API_CONFIG from '..\..\config/api';
 
 const Container = styled.div`
   padding: 20px;
@@ -201,7 +202,7 @@ const ClientsManager: React.FC = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/admin/users', {
+      const response = await axios.get('API_CONFIG.ENDPOINTS.admin/users', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
         }
@@ -213,7 +214,7 @@ const ClientsManager: React.FC = () => {
       const usersWithOrders = await Promise.all(
         response.data.map(async (user: User) => {
           try {
-            const ordersResponse = await axios.get(`http://localhost:5000/api/admin/user/${user.id}/orders`, {
+            const ordersResponse = await axios.get(`API_CONFIG.ENDPOINTS.admin/user/${user.id}/orders`, {
               headers: {
                 'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
               }

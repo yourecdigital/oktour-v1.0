@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import API_CONFIG from '..\config/api';
 
 export interface HeroBackground {
   page_name: string;
@@ -20,7 +21,7 @@ export function useHeroBackground(pageName: string) {
       setLoading(true);
       setError(null);
       try {
-        const res = await axios.get(`http://localhost:5000/api/hero-backgrounds/${encodeURIComponent(pageName)}`);
+        const res = await axios.get(`API_CONFIG.ENDPOINTS.hero-backgrounds/${encodeURIComponent(pageName)}`);
         if (!isMounted) return;
         setBackground(res.data || null);
       } catch (e: any) {

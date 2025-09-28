@@ -4,6 +4,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { uploadLocally } from '../../utils/uploadUtils';
 import CategorySelector from './CategorySelector';
+import API_CONFIG from '..\..\config/api';
 
 const Container = styled.div`
   padding: 20px;
@@ -296,7 +297,7 @@ const ServicesEditor: React.FC = () => {
 
   const fetchServices = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/services');
+      const response = await axios.get('API_CONFIG.ENDPOINTS.services');
       setServices(response.data);
       
       // Собираем уникальные категории из существующих услуг
@@ -345,7 +346,7 @@ const ServicesEditor: React.FC = () => {
   const handleDelete = async (id: number) => {
     if (window.confirm('Вы уверены, что хотите удалить эту услугу?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/services/${id}`, {
+        await axios.delete(`API_CONFIG.ENDPOINTS.services/${id}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
         }
@@ -405,14 +406,14 @@ const ServicesEditor: React.FC = () => {
       };
 
       if (editingService) {
-        await axios.put(`http://localhost:5000/api/services/${editingService.id}`, serviceData, {
+        await axios.put(`API_CONFIG.ENDPOINTS.services/${editingService.id}`, serviceData, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
           }
         });
         toast.success('Услуга обновлена');
       } else {
-        await axios.post('http://localhost:5000/api/services', serviceData, {
+        await axios.post('API_CONFIG.ENDPOINTS.services', serviceData, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
           }

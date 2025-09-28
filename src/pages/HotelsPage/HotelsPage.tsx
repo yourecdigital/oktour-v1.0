@@ -9,6 +9,7 @@ import { getImageUrl } from '../../utils/imageUtils';
 import { useAutoRefresh } from '../../hooks/useAutoRefresh';
 import UniversalHeroSection from '../../components/UniversalHeroSection/UniversalHeroSection';
 import './HotelsPage.css';
+import API_CONFIG from '..\..\config/api';
 
 interface Hotel {
   id: number;
@@ -36,8 +37,8 @@ const HotelsPage: React.FC = () => {
   const fetchData = useCallback(async () => {
     try {
       const [hotelsResponse, citiesResponse] = await Promise.all([
-        axios.get('http://localhost:5000/api/hotels'),
-        axios.get('http://localhost:5000/api/hotels/cities')
+        axios.get('API_CONFIG.ENDPOINTS.hotels'),
+        axios.get('API_CONFIG.ENDPOINTS.hotels/cities')
       ]);
       setHotels(hotelsResponse.data);
       setCities(citiesResponse.data);

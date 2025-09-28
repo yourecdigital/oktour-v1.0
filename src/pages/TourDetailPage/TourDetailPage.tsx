@@ -7,6 +7,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import toast from 'react-hot-toast';
 import { getImageUrl } from '../../utils/imageUtils';
 import './TourDetailPage.css';
+import API_CONFIG from '..\..\config/api';
 
 interface Tour {
   id: number;
@@ -38,7 +39,7 @@ const TourDetailPage: React.FC = () => {
   const fetchTour = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`http://localhost:5000/api/tours/${id}`);
+      const response = await axios.get(`API_CONFIG.ENDPOINTS.tours/${id}`);
       setTour(response.data);
     } catch (error: any) {
       console.error('Error fetching tour:', error);

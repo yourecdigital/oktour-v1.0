@@ -1,4 +1,5 @@
 import axios from 'axios';
+import API_CONFIG from '..\config/api';
 
 interface PresignedUploadResponse {
   url: string;
@@ -42,7 +43,7 @@ export const uploadToS3 = async (file: File, token: string): Promise<string> => 
 
     if (uploadResponse.status === 204 || uploadResponse.status === 200) {
       // Возвращаем URL для доступа к файлу
-      return `http://localhost:5000/uploads/${key}`;
+      return `API_CONFIG.BASE_URL/uploads/${key}`;
     } else {
       throw new Error('Upload failed');
     }
@@ -58,7 +59,7 @@ export const uploadLocally = async (file: File, token: string): Promise<string> 
   formData.append('image', file);
 
   try {
-    const response = await axios.post('http://localhost:5000/api/upload', formData, {
+    const response = await axios.post('API_CONFIG.ENDPOINTS.upload', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
         'Authorization': `Bearer ${token}`

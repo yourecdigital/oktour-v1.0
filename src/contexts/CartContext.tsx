@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback, Rea
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useAuth } from './AuthContext';
+import API_CONFIG from '..\config/api';
 
 interface CartItem {
   id: number;
@@ -62,7 +63,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     
     setLoading(true);
     try {
-      const response = await axios.get('http://localhost:5000/api/cart');
+      const response = await axios.get('API_CONFIG.ENDPOINTS.cart');
       setCartItems(response.data);
     } catch (error) {
       console.error('Error fetching cart items:', error);
@@ -89,7 +90,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
 
     try {
       // Отправляем на сервер
-      await axios.post('http://localhost:5000/api/cart/add', {
+      await axios.post('API_CONFIG.ENDPOINTS.cart/add', {
         itemId,
         type,
         quantity,
@@ -115,7 +116,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
 
   const removeFromCart = async (cartItemId: number) => {
     try {
-      await axios.delete(`http://localhost:5000/api/cart/${cartItemId}`);
+      await axios.delete(`API_CONFIG.ENDPOINTS.cart/${cartItemId}`);
       
       setCartItems(prev => prev.filter(item => item.id !== cartItemId));
       toast.success('Товар удален из корзины');

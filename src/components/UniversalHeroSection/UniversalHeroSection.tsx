@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useHeroBackground } from '../../hooks/useHeroBackground';
 import './UniversalHeroSection.css';
+import API_CONFIG from '..\..\config/api';
 
 interface UniversalHeroSectionProps {
   pageName: string;
@@ -203,7 +204,7 @@ const UniversalHeroSection: React.FC<UniversalHeroSectionProps> = ({
               {/* Fallback image shown while video is loading */}
               {!isVideoLoaded && background.fallback_image_url && (
                 <img 
-                  src={`http://localhost:5000${background.fallback_image_url}`}
+                  src={`API_CONFIG.BASE_URL${background.fallback_image_url}`}
                   alt={`${title} background`}
                   className="hero-background-image hero-fallback-image"
                   style={{ 
@@ -221,14 +222,14 @@ const UniversalHeroSection: React.FC<UniversalHeroSectionProps> = ({
               )}
               <video 
                 ref={videoRef}
-                src={`http://localhost:5000${background.background_image_url}`}
+                src={`API_CONFIG.BASE_URL${background.background_image_url}`}
                 className="hero-background-video"
                 muted
                 autoPlay
                 loop
                 playsInline
                 preload="auto"
-                poster={background.fallback_image_url ? `http://localhost:5000${background.fallback_image_url}` : undefined}
+                poster={background.fallback_image_url ? `API_CONFIG.BASE_URL${background.fallback_image_url}` : undefined}
                 controls={false}
                 disablePictureInPicture
                 disableRemotePlayback
@@ -261,7 +262,7 @@ const UniversalHeroSection: React.FC<UniversalHeroSectionProps> = ({
             </>
           ) : (
             <img 
-              src={`http://localhost:5000${background.background_image_url}`}
+              src={`API_CONFIG.BASE_URL${background.background_image_url}`}
               alt={`${title} background`}
               className="hero-background-image"
               style={{ 

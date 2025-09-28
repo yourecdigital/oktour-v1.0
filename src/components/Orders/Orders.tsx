@@ -3,6 +3,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styled from 'styled-components';
+import API_CONFIG from '..\..\config/api';
 
 interface OrderItem {
   tourId: number;
@@ -217,7 +218,7 @@ const Orders: React.FC = () => {
 
   const fetchOrders = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/orders');
+      const response = await axios.get('API_CONFIG.ENDPOINTS.orders');
       setOrders(response.data);
     } catch (error) {
       console.error('Error fetching orders:', error);

@@ -9,6 +9,7 @@ import { getImageUrl } from '../../utils/imageUtils';
 import { useAutoRefresh } from '../../hooks/useAutoRefresh';
 import UniversalHeroSection from '../../components/UniversalHeroSection/UniversalHeroSection';
 import './ToursPage.css';
+import API_CONFIG from '..\..\config/api';
 
 interface Tour {
   id: number;
@@ -36,7 +37,7 @@ const ToursPage: React.FC = () => {
 
   const fetchData = useCallback(async () => {
     try {
-      const toursResponse = await axios.get('http://localhost:5000/api/tours');
+      const toursResponse = await axios.get('API_CONFIG.ENDPOINTS.tours');
       setTours(toursResponse.data);
     } catch (error) {
       console.error('Error fetching data:', error);

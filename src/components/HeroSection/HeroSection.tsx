@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import API_CONFIG from '..\..\config/api';
 
 const HeroSection: React.FC = () => {
   const { user } = useAuth();
@@ -44,7 +45,7 @@ const HeroSection: React.FC = () => {
     }
 
     try {
-      await axios.post('http://localhost:5000/api/bonus/add', { points: 500 });
+      await axios.post(API_CONFIG.ENDPOINTS.BONUS_ADD, { points: 500 });
       toast.success('Получено 500 бонусных баллов!');
     } catch (error: any) {
       const message = error.response?.data?.error || 'Ошибка получения бонусов';
