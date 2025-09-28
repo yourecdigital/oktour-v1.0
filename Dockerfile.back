@@ -1,0 +1,8 @@
+FROM node:18-alpine
+WORKDIR /app
+RUN apk add --no-cache python3 make g++
+COPY server/package*.json ./
+RUN npm cache clean --force && npm install --legacy-peer-deps
+COPY server/ ./
+EXPOSE 5000
+CMD ["node", "index.js"]

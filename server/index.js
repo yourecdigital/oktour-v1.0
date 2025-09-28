@@ -2187,7 +2187,12 @@ app.use((req, res, next) => {
   next();
 });
 
-app.listen(PORT, () => {
+// Health check endpoint
+app.get('/', (req, res) => {
+  res.json({ status: 'OK', message: 'SochiTravel API is running' });
+});
+
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
 });
 
