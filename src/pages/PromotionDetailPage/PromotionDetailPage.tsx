@@ -7,7 +7,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import toast from 'react-hot-toast';
 import { getImageUrl } from '../../utils/imageUtils';
 import './PromotionDetailPage.css';
-import API_CONFIG from '..\..\config/api';
+
 
 interface Promotion {
   id: number;
@@ -36,7 +36,7 @@ const PromotionDetailPage: React.FC = () => {
   const fetchPromotion = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`API_CONFIG.ENDPOINTS.promotions/${id}`);
+      const response = await axios.get(`'http://localhost:5000/api/promotions/${id}`);
       setPromotion(response.data);
     } catch (error: any) {
       console.error('Error fetching promotion:', error);

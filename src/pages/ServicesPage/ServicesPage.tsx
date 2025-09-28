@@ -9,7 +9,7 @@ import { getImageUrl } from '../../utils/imageUtils';
 import { useAutoRefresh } from '../../hooks/useAutoRefresh';
 import UniversalHeroSection from '../../components/UniversalHeroSection/UniversalHeroSection';
 import './ServicesPage.css';
-import API_CONFIG from '..\..\config/api';
+
 
 interface Service {
   id: number;
@@ -31,7 +31,7 @@ const ServicesPage: React.FC = () => {
 
   const fetchServices = useCallback(async () => {
     try {
-      const response = await axios.get('API_CONFIG.ENDPOINTS.services');
+      const response = await axios.get('http://localhost:5000/api/services');
       setServices(response.data);
     } catch (error) {
       console.error('Error fetching services:', error);

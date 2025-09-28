@@ -9,7 +9,7 @@ import { getImageUrl } from '../../utils/imageUtils';
 import { useAutoRefresh } from '../../hooks/useAutoRefresh';
 import UniversalHeroSection from '../../components/UniversalHeroSection/UniversalHeroSection';
 import './ForeignPage.css';
-import API_CONFIG from '..\..\config/api';
+
 
 interface ForeignTour {
   id: number;
@@ -49,7 +49,7 @@ const ForeignPage: React.FC = () => {
 
   const fetchForeignTours = useCallback(async () => {
     try {
-      const response = await axios.get('API_CONFIG.ENDPOINTS.foreign-tours');
+      const response = await axios.get('http://localhost:5000/api/foreign-tours');
       setForeignTours(response.data.map((tour: any) => ({
         ...tour,
         highlights: tour.highlights ? JSON.parse(tour.highlights) : []

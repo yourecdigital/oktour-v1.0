@@ -7,7 +7,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import toast from 'react-hot-toast';
 import { getImageUrl } from '../../utils/imageUtils';
 import './ServicePage.css';
-import API_CONFIG from '..\..\config/api';
+
 
 interface Service {
   id: number;
@@ -35,7 +35,7 @@ const ServicePage: React.FC = () => {
   const fetchService = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`API_CONFIG.ENDPOINTS.services/${id}`);
+      const response = await axios.get(`'http://localhost:5000/api/services/${id}`);
       setService(response.data);
     } catch (error: any) {
       console.error('Error fetching service:', error);

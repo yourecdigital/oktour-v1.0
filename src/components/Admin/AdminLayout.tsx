@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import axios from 'axios';
-import API_CONFIG from '..\..\config/api';
+
 
 const AdminContainer = styled.div`
   min-height: 100vh;
@@ -325,7 +325,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
           endpoint = '/api/tours';
       }
 
-      const response = await axios.get(`API_CONFIG.BASE_URL${endpoint}`);
+      const response = await axios.get(`'http://localhost:5000'${endpoint}`);
       
       if (currentSection === 'foreign') {
         // Для зарубежных туров показываем страны

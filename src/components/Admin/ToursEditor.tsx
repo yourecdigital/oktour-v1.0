@@ -5,7 +5,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import CategorySelector from './CategorySelector';
 import { uploadLocally } from '../../utils/uploadUtils';
-import API_CONFIG from '..\..\config/api';
+
 
 const Container = styled.div`
   padding: 20px;
@@ -347,7 +347,7 @@ const ToursEditor: React.FC = () => {
 
   const fetchTours = async () => {
     try {
-      const response = await axios.get('API_CONFIG.ENDPOINTS.tours');
+      const response = await axios.get('http://localhost:5000/api/tours');
       const allToursData = response.data;
       setAllTours(allToursData);
       
@@ -412,7 +412,7 @@ const ToursEditor: React.FC = () => {
   const handleDelete = async (id: number) => {
     if (window.confirm('Вы уверены, что хотите удалить этот тур?')) {
       try {
-        await axios.delete(`API_CONFIG.ENDPOINTS.tours/${id}`, {
+        await axios.delete(`'http://localhost:5000/api/tours/${id}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
         }
@@ -472,14 +472,14 @@ const ToursEditor: React.FC = () => {
       };
 
       if (editingTour) {
-        await axios.put(`API_CONFIG.ENDPOINTS.tours/${editingTour.id}`, tourData, {
+        await axios.put(`'http://localhost:5000/api/tours/${editingTour.id}`, tourData, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
           }
         });
         toast.success('Тур обновлен');
       } else {
-        await axios.post('API_CONFIG.ENDPOINTS.tours', tourData, {
+        await axios.post('http://localhost:5000/api/tours', tourData, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
           }
@@ -530,7 +530,7 @@ const ToursEditor: React.FC = () => {
               <CardInfo>
                 <strong>Изображение:</strong>
                 <img 
-                  src={`API_CONFIG.BASE_URL${tour.image_url}`} 
+                  src={`'http://localhost:5000'${tour.image_url}`} 
                   alt={tour.name}
                   style={{ 
                     width: '100%', 
@@ -665,7 +665,7 @@ const ToursEditor: React.FC = () => {
                 {formData.image_url && (
                   <ImagePreview>
                     <img 
-                      src={formData.image_url.startsWith('http') ? formData.image_url : `API_CONFIG.BASE_URL${formData.image_url}`} 
+                      src={formData.image_url.startsWith('http') ? formData.image_url : `'http://localhost:5000'${formData.image_url}`} 
                       alt="Current" 
                     />
                   </ImagePreview>

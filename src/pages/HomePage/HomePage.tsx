@@ -4,7 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useCart } from '../../contexts/CartContext';
 import axios from 'axios';
 import UniversalHeroSection from '../../components/UniversalHeroSection/UniversalHeroSection';
-import API_CONFIG from '../../config/api';
+
 import './HomePage.css';
 
 const HomePage: React.FC = () => {
@@ -41,7 +41,7 @@ const HomePage: React.FC = () => {
 
   const fetchRandomPromotion = async () => {
     try {
-      const response = await axios.get(`${API_CONFIG.ENDPOINTS.PROMOTIONS}/random?limit=1`);
+      const response = await axios.get(`http://localhost:5000/api/promotions/random?limit=1`);
       if (response.data && response.data.length > 0) {
         setPromotions(response.data);
       }
@@ -54,9 +54,9 @@ const HomePage: React.FC = () => {
     const fetchData = async () => {
       try {
         const [promotionsRes, hotelsRes, servicesRes] = await Promise.all([
-          axios.get('API_CONFIG.ENDPOINTS.promotions/random?limit=1'),
-          axios.get('API_CONFIG.ENDPOINTS.hotels'),
-          axios.get('API_CONFIG.ENDPOINTS.services')
+          axios.get('http://localhost:5000/api/promotions/random?limit=1'),
+          axios.get('http://localhost:5000/api/hotels'),
+          axios.get('http://localhost:5000/api/services')
         ]);
         
         setPromotions(promotionsRes.data);

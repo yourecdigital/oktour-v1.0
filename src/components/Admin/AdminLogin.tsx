@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import API_CONFIG from '..\..\config/api';
+
 
 const LoginContainer = styled.div`
   min-height: 100vh;
@@ -107,7 +107,7 @@ const AdminLogin: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const response = await axios.post('API_CONFIG.ENDPOINTS.admin/login', {
+      const response = await axios.post('http://localhost:5000/api/admin/login', {
         username,
         password
       });

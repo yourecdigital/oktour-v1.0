@@ -5,7 +5,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import styled from 'styled-components';
-import API_CONFIG from '..\..\config/api';
+
 
 const CartContainer = styled.div`
   min-height: 80vh;
@@ -232,7 +232,7 @@ const Cart: React.FC = () => {
 
     setIsCheckingOut(true);
     try {
-      await axios.post('API_CONFIG.ENDPOINTS.orders');
+      await axios.post('http://localhost:5000/api/orders');
       toast.success('Заказ успешно создан!');
       navigate('/orders');
     } catch (error: any) {

@@ -14,5 +14,5 @@ export const getImageUrl = (imageUrl?: string): string => {
   }
   
   // Если это относительный путь, добавляем базовый URL сервера
-  return `API_CONFIG.BASE_URL${imageUrl}`;
+  return `'http://localhost:5000'${imageUrl}`;
 };

@@ -7,7 +7,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import toast from 'react-hot-toast';
 import { getImageUrl } from '../../utils/imageUtils';
 import './ForeignTourDetailPage.css';
-import API_CONFIG from '..\..\config/api';
+
 
 interface ForeignTour {
   id: number;
@@ -38,7 +38,7 @@ const ForeignTourDetailPage: React.FC = () => {
   const fetchTour = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`API_CONFIG.ENDPOINTS.foreign-tours/${id}`);
+      const response = await axios.get(`'http://localhost:5000/api/foreign-tours/${id}`);
       setTour(response.data);
     } catch (error: any) {
       console.error('Error fetching foreign tour:', error);

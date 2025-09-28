@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useAuth } from '../../contexts/AuthContext';
 import axios from 'axios';
-import API_CONFIG from '..\..\config/api';
+
 
 const BonusContainer = styled.div`
   display: flex;
@@ -94,7 +94,7 @@ const BonusDisplay: React.FC<BonusDisplayProps> = ({ showTooltip = true, classNa
     if (!token) return;
     
     try {
-      const response = await axios.get('API_CONFIG.ENDPOINTS.orders', {
+      const response = await axios.get('http://localhost:5000/api/orders', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -111,10 +111,10 @@ const BonusDisplay: React.FC<BonusDisplayProps> = ({ showTooltip = true, classNa
     setLoading(true);
     try {
       const [bonusResponse, ordersResponse] = await Promise.all([
-        axios.get('API_CONFIG.ENDPOINTS.bonus/points', {
+        axios.get('http://localhost:5000/api/bonus/points', {
           headers: { 'Authorization': `Bearer ${token}` }
         }),
-        axios.get('API_CONFIG.ENDPOINTS.orders', {
+        axios.get('http://localhost:5000/api/orders', {
           headers: { 'Authorization': `Bearer ${token}` }
         })
       ]);

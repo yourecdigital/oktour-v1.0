@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { uploadLocally } from '../../utils/uploadUtils';
-import API_CONFIG from '..\..\config/api';
+
 
 const Container = styled.div`
   padding: 20px;
@@ -305,7 +305,7 @@ const CruisesEditor: React.FC = () => {
 
   const fetchCruises = async () => {
     try {
-      const response = await axios.get('API_CONFIG.ENDPOINTS.cruises');
+      const response = await axios.get('http://localhost:5000/api/cruises');
       setCruises(response.data);
     } catch (error) {
       console.error('Error fetching cruises:', error);
@@ -350,7 +350,7 @@ const CruisesEditor: React.FC = () => {
   const handleDelete = async (id: number) => {
     if (window.confirm('Вы уверены, что хотите удалить этот круиз?')) {
       try {
-        await axios.delete(`API_CONFIG.ENDPOINTS.cruises/${id}`, {
+        await axios.delete(`'http://localhost:5000/api/cruises/${id}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
         }
@@ -410,14 +410,14 @@ const CruisesEditor: React.FC = () => {
       };
 
       if (editingCruise) {
-        await axios.put(`API_CONFIG.ENDPOINTS.cruises/${editingCruise.id}`, cruiseData, {
+        await axios.put(`'http://localhost:5000/api/cruises/${editingCruise.id}`, cruiseData, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
           }
         });
         toast.success('Круиз обновлен');
       } else {
-        await axios.post('API_CONFIG.ENDPOINTS.cruises', cruiseData, {
+        await axios.post('http://localhost:5000/api/cruises', cruiseData, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
           }
@@ -466,7 +466,7 @@ const CruisesEditor: React.FC = () => {
               <CardInfo>
                 <strong>Изображение:</strong>
                 <img 
-                  src={`API_CONFIG.BASE_URL${cruise.image_url}`} 
+                  src={`'http://localhost:5000'${cruise.image_url}`} 
                   alt={cruise.name}
                   style={{ 
                     width: '100%', 

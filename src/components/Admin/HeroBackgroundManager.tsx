@@ -4,7 +4,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { uploadLocally } from '../../utils/uploadUtils';
 import './HeroBackgroundManager.css';
-import API_CONFIG from '..\..\config/api';
+
 
 const Container = styled.div`
   padding: 20px;
@@ -348,7 +348,7 @@ const HeroBackgroundManager: React.FC = () => {
   const fetchBackgrounds = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('API_CONFIG.ENDPOINTS.hero-backgrounds');
+      const response = await axios.get('http://localhost:5000/api/hero-backgrounds');
       setBackgrounds(response.data || []);
     } catch (error) {
       console.error('Error fetching backgrounds:', error);
@@ -446,7 +446,7 @@ const HeroBackgroundManager: React.FC = () => {
       };
 
 
-      const response = await axios.post('API_CONFIG.ENDPOINTS.hero-backgrounds', backgroundData, {
+      const response = await axios.post('http://localhost:5000/api/hero-backgrounds', backgroundData, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('adminToken')}`,
           'Content-Type': 'application/json'
@@ -555,7 +555,7 @@ const HeroBackgroundManager: React.FC = () => {
         throw new Error('Admin token not found. Please login again.');
       }
 
-      const uploadResponse = await axios.post('API_CONFIG.ENDPOINTS.upload', formData, {
+      const uploadResponse = await axios.post('http://localhost:5000/api/upload', formData, {
         headers: { 
           'Content-Type': 'multipart/form-data',
           'Authorization': `Bearer ${adminToken}`
@@ -609,7 +609,7 @@ const HeroBackgroundManager: React.FC = () => {
     }
 
     try {
-      await axios.delete(`API_CONFIG.ENDPOINTS.hero-backgrounds/${encodeURIComponent(pageName)}`, {
+      await axios.delete(`'http://localhost:5000/api/hero-backgrounds/${encodeURIComponent(pageName)}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
         }
@@ -666,13 +666,13 @@ const HeroBackgroundManager: React.FC = () => {
                 {background?.background_image_url ? (
                   background.background_type === 'video' ? (
                     <video 
-                      src={`API_CONFIG.BASE_URL${background.background_image_url}`}
+                      src={`'http://localhost:5000'${background.background_image_url}`}
                       className="preview-video"
                       muted
                     />
                   ) : (
                     <img 
-                      src={`API_CONFIG.BASE_URL${background.background_image_url}`}
+                      src={`'http://localhost:5000'${background.background_image_url}`}
                       alt={`${page.label} background`}
                       className="preview-image"
                     />
@@ -781,13 +781,13 @@ const HeroBackgroundManager: React.FC = () => {
                 backgroundType === 'video' ? (
             <PreviewVideo
               ref={handleVideoLoad}
-              src={imagePreview.startsWith('data:') ? imagePreview : `API_CONFIG.BASE_URL${imagePreview}`}
+              src={imagePreview.startsWith('data:') ? imagePreview : `'http://localhost:5000'${imagePreview}`}
               controls
               crossOrigin="anonymous"
             />
                 ) : (
                   <PreviewImage 
-                    src={imagePreview.startsWith('data:') ? imagePreview : `API_CONFIG.BASE_URL${imagePreview}`} 
+                    src={imagePreview.startsWith('data:') ? imagePreview : `'http://localhost:5000'${imagePreview}`} 
                     alt="Preview" 
                   />
                 )
@@ -795,13 +795,13 @@ const HeroBackgroundManager: React.FC = () => {
                 editingBackground.background_type === 'video' ? (
               <PreviewVideo
                 ref={handleVideoLoad}
-                src={`API_CONFIG.BASE_URL${editingBackground.background_image_url}`}
+                src={`'http://localhost:5000'${editingBackground.background_image_url}`}
                 controls
                 crossOrigin="anonymous"
               />
                 ) : (
                   <PreviewImage 
-                    src={`API_CONFIG.BASE_URL${editingBackground.background_image_url}`} 
+                    src={`'http://localhost:5000'${editingBackground.background_image_url}`} 
                     alt="Current background" 
                   />
                 )
@@ -838,7 +838,7 @@ const HeroBackgroundManager: React.FC = () => {
                 {capturedFrame && (
                   <CapturedFramePreview>
                     <CapturedFrameImage 
-                      src={capturedFrame.startsWith('data:') ? capturedFrame : `API_CONFIG.BASE_URL${capturedFrame}`}
+                      src={capturedFrame.startsWith('data:') ? capturedFrame : `'http://localhost:5000'${capturedFrame}`}
                       alt="Captured frame"
                     />
                   </CapturedFramePreview>

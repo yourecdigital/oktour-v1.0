@@ -9,7 +9,7 @@ import { getImageUrl } from '../../utils/imageUtils';
 import { useAutoRefresh } from '../../hooks/useAutoRefresh';
 import UniversalHeroSection from '../../components/UniversalHeroSection/UniversalHeroSection';
 import './CruisesPage.css';
-import API_CONFIG from '..\..\config/api';
+
 
 interface Cruise {
   id: number;
@@ -34,7 +34,7 @@ const CruisesPage: React.FC = () => {
 
   const fetchCruises = useCallback(async () => {
     try {
-      const response = await axios.get('API_CONFIG.ENDPOINTS.cruises');
+      const response = await axios.get('http://localhost:5000/api/cruises');
       setCruises(response.data);
     } catch (error) {
       console.error('Error fetching cruises:', error);
