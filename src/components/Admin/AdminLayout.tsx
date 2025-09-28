@@ -325,7 +325,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
           endpoint = '/api/tours';
       }
 
-      const response = await axios.get(`'http://localhost:5000'${endpoint}`);
+      const response = await axios.get(`http://localhost:5000${endpoint}`);
       
       if (currentSection === 'foreign') {
         // Для зарубежных туров показываем страны

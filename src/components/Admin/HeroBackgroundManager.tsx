@@ -781,13 +781,13 @@ const HeroBackgroundManager: React.FC = () => {
                 backgroundType === 'video' ? (
             <PreviewVideo
               ref={handleVideoLoad}
-              src={imagePreview.startsWith('data:') ? imagePreview : `'http://localhost:5000'${imagePreview}`}
+              src={imagePreview.startsWith('data:') ? imagePreview : `http://localhost:5000${imagePreview}`}
               controls
               crossOrigin="anonymous"
             />
                 ) : (
                   <PreviewImage 
-                    src={imagePreview.startsWith('data:') ? imagePreview : `'http://localhost:5000'${imagePreview}`} 
+                    src={imagePreview.startsWith('data:') ? imagePreview : `http://localhost:5000${imagePreview}`} 
                     alt="Preview" 
                   />
                 )
@@ -838,7 +838,7 @@ const HeroBackgroundManager: React.FC = () => {
                 {capturedFrame && (
                   <CapturedFramePreview>
                     <CapturedFrameImage 
-                      src={capturedFrame.startsWith('data:') ? capturedFrame : `'http://localhost:5000'${capturedFrame}`}
+                      src={capturedFrame.startsWith('data:') ? capturedFrame : `http://localhost:5000${capturedFrame}`}
                       alt="Captured frame"
                     />
                   </CapturedFramePreview>

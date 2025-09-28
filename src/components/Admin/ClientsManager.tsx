@@ -214,7 +214,7 @@ const ClientsManager: React.FC = () => {
       const usersWithOrders = await Promise.all(
         response.data.map(async (user: User) => {
           try {
-            const ordersResponse = await axios.get(`'http://localhost:5000/api/admin/user/${user.id}/orders`, {
+            const ordersResponse = await axios.get(`http://localhost:5000/api/admin/user/${user.id}/orders`, {
               headers: {
                 'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
               }

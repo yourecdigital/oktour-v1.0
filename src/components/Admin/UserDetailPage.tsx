@@ -391,7 +391,7 @@ const UserDetailPage: React.FC = () => {
         
         // Получаем количество заказов для пользователя
         try {
-          const ordersResponse = await axios.get(`'http://localhost:5000/api/admin/user/${foundUser.id}/orders`, {
+          const ordersResponse = await axios.get(`http://localhost:5000/api/admin/user/${foundUser.id}/orders`, {
             headers: {
               'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
             }
@@ -421,7 +421,7 @@ const UserDetailPage: React.FC = () => {
     
     setOrdersLoading(true);
     try {
-      const response = await axios.get(`'http://localhost:5000/api/admin/user/${id}/orders`, {
+      const response = await axios.get(`http://localhost:5000/api/admin/user/${id}/orders`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
         }
