@@ -21,7 +21,7 @@ export function useHeroBackground(pageName: string) {
       setLoading(true);
       setError(null);
       try {
-        const res = await axios.get(`'http://localhost:5000/api/hero-backgrounds/${encodeURIComponent(pageName)}`);
+        const res = await axios.get(`http://localhost:5000/api/hero-backgrounds/${encodeURIComponent(pageName)}`);
         if (!isMounted) return;
         setBackground(res.data || null);
       } catch (e: any) {

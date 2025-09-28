@@ -14,5 +14,5 @@ export const getImageUrl = (imageUrl?: string): string => {
   }
   
   // Если это относительный путь, добавляем базовый URL сервера
-  return `'http://localhost:5000'${imageUrl}`;
+  return `http://localhost:5000${imageUrl}`;
 };
